@@ -82,6 +82,7 @@ catalog:
   cssnano: ^7.0.6
   cz-git: ^1.11.1
   czg: ^1.11.1
+  crypto-js: ^4.2.0
   dayjs: ^1.11.13
   defu: ^6.1.4
   depcheck: ^1.4.7

@@ -35,4 +35,4 @@ const encryptionPassword = (data: any) => {
   });
   return user;
 };
-export { encryptionPassword };
+export default { encryptionPassword };
