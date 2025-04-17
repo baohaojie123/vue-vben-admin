@@ -6,7 +6,7 @@ import { Page, useVbenDrawer } from '@vben/common-ui';
 import { ElButton, ElCard, ElCheckbox, ElMessage } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
-import { getAllMenusApi } from '#/api';
+import { getAllMenusApi, getTotalDataApi } from '#/api';
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -40,7 +40,10 @@ const [Form, formApi] = useVbenForm({
           }));
         },
         // 菜单接口
-        api: getAllMenusApi,
+        api: getTotalDataApi({
+          communityDeptId: '1571774961071181826',
+          hospitalDeptId: '1572770733929545730',
+        }),
       },
       // 字段名
       fieldName: 'api',

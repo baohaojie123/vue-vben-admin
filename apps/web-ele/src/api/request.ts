@@ -18,6 +18,7 @@ import { ElMessage } from 'element-plus';
 import { useAuthStore } from '#/store';
 
 import { refreshTokenApi } from './core';
+import { getEncryptData } from './getEncryptData';
 
 const { apiURL } = useAppConfig(import.meta.env, import.meta.env.PROD);
 
@@ -67,6 +68,7 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
 
       config.headers.Authorization = formatToken(accessStore.accessToken);
       config.headers['Accept-Language'] = preferences.app.locale;
+      getEncryptData(config);
       return config;
     },
   });

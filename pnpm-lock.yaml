@@ -387,6 +387,9 @@ catalogs:
     sass:
       specifier: ^1.86.3
       version: 1.86.3
+    sm-crypto:
+      specifier: ^0.3.13
+      version: 0.3.13
     sortablejs:
       specifier: ^1.15.6
       version: 1.15.6
@@ -698,6 +701,9 @@ importers:
       pinia:
         specifier: ^2.3.1
         version: 2.3.1(typescript@5.8.3)(vue@3.5.13(typescript@5.8.3))
+      sm-crypto:
+        specifier: 'catalog:'
+        version: 0.3.13
       vue:
         specifier: ^3.5.13
         version: 3.5.13(typescript@5.8.3)
@@ -8845,6 +8851,9 @@ packages:
   slice-ansi@7.1.0:
     resolution: {integrity: sha512-bSiSngZ/jWeX93BqeIAbImyTbEihizcwNjFoRUIY/T1wWQsfsm2Vw1agPKylXvQTU7iASGdHhyqRlqQzfz+Htg==}
     engines: {node: '>=18'}
+
+  sm-crypto@0.3.13:
+    resolution: {integrity: sha512-ztNF+pZq6viCPMA1A6KKu3bgpkmYti5avykRHbcFIdSipFdkVmfUw2CnpM2kBJyppIalqvczLNM3wR8OQ0pT5w==}
 
   smart-buffer@4.2.0:
     resolution: {integrity: sha512-94hK0Hh8rPqQl2xXc3HsaBoOXKV20MToPkcXvwbISWLEs+64sBq5kFgn2kJDHb1Pry9yrP0dxrCI9RRci7RXKg==}
@@ -17941,6 +17950,10 @@ snapshots:
     dependencies:
       ansi-styles: 6.2.1
       is-fullwidth-code-point: 5.0.0
+
+  sm-crypto@0.3.13:
+    dependencies:
+      jsbn: 1.1.0
 
   smart-buffer@4.2.0: {}
 
