@@ -19,6 +19,24 @@ const routes: RouteRecordRaw[] = [
         path: '/ai/bot',
         component: () => import('#/views/ai/bot/index.vue'),
       },
+      {
+        meta: {
+          title: '会话列表',
+          hideInMenu: true,
+        },
+        name: 'ConversationList',
+        path: '/ai/bot/conversation-list',
+        component: () => import('#/views/ai/bot/conversation-list.vue'),
+      },
+      {
+        meta: {
+          title: '消息列表',
+          hideInMenu: true,
+        },
+        name: 'MessageList',
+        path: '/ai/bot/message-list',
+        component: () => import('#/views/ai/bot/message-list.vue'),
+      },
     ],
   },
 ];

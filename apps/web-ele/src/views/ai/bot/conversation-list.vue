@@ -4,54 +4,40 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { useRouter } from 'vue-router';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { Page } from '@vben/common-ui';
 
 import dayjs from 'dayjs';
 import { ElButton } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 
-import FormModalDemo from './form-modal-demo.vue';
-
-const router = useRouter();
 const MOCK_TABLE_DATA = [
   {
-    bot_id: '7485282045565288459',
-    bot_name: 'doubao_COZE',
-    description: '',
-    publish_time: dayjs(),
+    id: '7493378135753490447',
   },
   {
-    bot_id: '7480364835252453402',
-    bot_name: 'AZ-店员',
-    description:
-      'AZ-店员是一位亲切专业的药店店员，通过角色扮演对话提升患者沟通技巧。扮演店员/药师角色，耐心倾听患者需求，用通俗语言交流，帮助用户提高沟通能力。始终友善专业，提供耐心回答，助您成为沟通高手。',
-    publish_time: dayjs(),
+    id: '7493378109140598821',
   },
   {
-    bot_id: '7478619945472442368',
-    bot_name: 'AZ-患者',
-    description: '工作流版本',
-    publish_time: dayjs(),
+    id: '7493377597582360628',
   },
   {
-    bot_id: '7477843867317780480',
-    bot_name: 'AZ-研发用的',
-    description: '您的智能陪练专家',
-    publish_time: dayjs(),
+    id: '7491503250189991974',
   },
   {
-    bot_id: '7475675281903730699',
-    bot_name: '会话测试机器人',
-    description: 'This is a test bot.',
-    publish_time: dayjs(),
+    id: '7491219172719050804',
   },
   {
-    bot_id: '7408097060077207604',
-    bot_name: 'CareFlow AI助理',
-    description:
-      'CareFlow AI助理是一款专为患者服务的智能机器人，提供查询和总结信息服务，帮助患者更好地管理健康状况，提高生活质量。',
-    publish_time: dayjs(),
+    id: '7491129678737178662',
+  },
+  {
+    id: '7490758380554993664',
+  },
+  {
+    id: '7490758162916720677',
+  },
+  {
+    id: '7490758094914519080',
   },
 ];
 const sleep = (time = 1000) => {
@@ -74,10 +60,7 @@ async function getExampleTableApi(params: any) {
   });
 }
 interface RowType {
-  bot_id: string;
-  bot_name: string;
-  description: string;
-  publish_time: string;
+  id: string;
 }
 
 const formOptions: VbenFormProps = {
@@ -144,20 +127,13 @@ const gridOptions: VxeTableGridOptions<RowType> = {
     labelField: 'name',
   },
   columns: [
-    { field: 'bot_id', title: 'ID' },
-    { field: 'bot_name', title: '名称' },
-    { field: 'description', title: '描述' },
-    {
-      field: 'publish_time',
-      formatter: 'formatDateTime',
-      title: '发布时间',
-    },
+    { field: 'id', title: '会话ID' },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
       title: '操作',
-      width: 160,
+      width: 180,
     },
   ],
   exportConfig: {},
@@ -189,34 +165,25 @@ const [Grid] = useVbenVxeGrid({
   formOptions,
   gridOptions,
 });
-const [FormModal, formModalApi] = useVbenModal({
-  connectedComponent: FormModalDemo,
-});
-function openFormModal() {
-  formModalApi
-    .setData({
-      // 表单值
-      values: { field1: 'abc', field2: '123' },
-    })
-    .open();
-}
-function handleViewConversationList() {
-  router.push('/ai/bot/conversation-list');
+const router = useRouter();
+function handleViewMessageList(id: string) {
+  router.push({
+    path: '/ai/bot/message-list',
+    query: {
+      id,
+    },
+  });
 }
 </script>
 
 <template>
   <Page auto-content-height>
-    <FormModal />
     <Grid>
-      <template #toolbar-actions>
-        <ElButton type="primary" @click="openFormModal"> 新增智能体 </ElButton>
-      </template>
-      <template #action>
-        <ElButton type="primary">体验</ElButton>
-        <ElButton type="primary" @click="handleViewConversationList">
-          查看
+      <template #action="{ row }">
+        <ElButton type="primary" @click="handleViewMessageList(row.id)">
+          消息列表
         </ElButton>
+        <ElButton type="primary">查看</ElButton>
       </template>
     </Grid>
   </Page>
