@@ -13,6 +13,6 @@ export const overridesPreferences = defineOverridesPreferences({
     // 检查更新的时间间隔，单位为分钟
     checkUpdatesInterval: 1,
     name: import.meta.env.VITE_APP_TITLE,
-    accessMode: 'backend',
+    // accessMode: 'backend',
   },
 });
