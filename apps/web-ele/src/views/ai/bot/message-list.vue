@@ -8,6 +8,5 @@ const route = useRoute();
 <template>
   <Page>
     <h3>消息列表{{ route.query.id }}</h3>
-    <Grid />
   </Page>
 </template>

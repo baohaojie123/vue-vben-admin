@@ -26,6 +26,8 @@
     "#/*": "./src/*"
   },
   "dependencies": {
+    "@logicflow/core": "catalog:",
+    "@logicflow/extension": "catalog:",
     "@types/crypto-js": "catalog:",
     "@vben/access": "workspace:*",
     "@vben/common-ui": "workspace:*",
@@ -41,6 +43,7 @@
     "@vben/styles": "workspace:*",
     "@vben/types": "workspace:*",
     "@vben/utils": "workspace:*",
+    "@vue-flow/core": "catalog:",
     "@vueuse/core": "catalog:",
     "crypto-js": "catalog:",
     "dayjs": "catalog:",

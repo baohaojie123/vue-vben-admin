@@ -3,7 +3,7 @@ import type { RouteRecordRaw } from 'vue-router';
 const routes: RouteRecordRaw[] = [
   {
     meta: {
-      icon: 'ic:baseline-view-in-ar',
+      icon: 'tdesign:animation-1',
       keepAlive: true,
       order: 1000,
       title: 'AI',
@@ -36,6 +36,22 @@ const routes: RouteRecordRaw[] = [
         name: 'MessageList',
         path: '/ai/bot/message-list',
         component: () => import('#/views/ai/bot/message-list.vue'),
+      },
+      {
+        meta: {
+          title: 'logicflow',
+        },
+        name: 'Logicflow',
+        path: '/ai/careflow/logicflow',
+        component: () => import('#/views/ai/careflow/logicflow.vue'),
+      },
+      {
+        meta: {
+          title: 'vueflow',
+        },
+        name: 'Vueflow',
+        path: '/ai/careflow/vueflow',
+        component: () => import('../../../views/ai/careflow/vueflow.vue'),
       },
     ],
   },
