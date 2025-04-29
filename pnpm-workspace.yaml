@@ -63,16 +63,9 @@ catalog:
   '@vue/reactivity': ^3.5.13
   '@vue/shared': ^3.5.13
   '@vue/test-utils': ^2.4.6
-<<<<<<< HEAD
-  '@vueuse/core': ^12.8.2
-  '@vueuse/motion': ^2.2.6
-  '@vueuse/integrations': ^12.8.2
-  '@vue-flow/core': '^1.43.1'
-=======
   '@vueuse/core': ^13.1.0
   '@vueuse/motion': ^3.0.3
   '@vueuse/integrations': ^13.1.0
->>>>>>> 8aa7dabeff82290daf96dad4eb803a5f2b6d19bf
   ant-design-vue: ^4.2.6
   archiver: ^7.0.1
   autoprefixer: ^10.4.21
