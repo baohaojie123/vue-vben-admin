@@ -39,14 +39,6 @@ const routes: RouteRecordRaw[] = [
       },
       {
         meta: {
-          title: 'logicflow',
-        },
-        name: 'Logicflow',
-        path: '/ai/careflow/logicflow',
-        component: () => import('#/views/ai/careflow/logicflow.vue'),
-      },
-      {
-        meta: {
           title: 'vueflow',
         },
         name: 'Vueflow',
