@@ -1,3 +1,5 @@
+import type { Recordable } from '@vben/types';
+
 import { h } from 'vue';
 
 import { setupVbenVxeTable, useVbenVxeGrid } from '@vben/plugins/vxe-table';
@@ -65,4 +67,8 @@ setupVbenVxeTable({
 
 export { useVbenVxeGrid };
 
+export type OnActionClickParams<T = Recordable<any>> = {
+  code: string;
+  row: T;
+};
 export type * from '@vben/plugins/vxe-table';

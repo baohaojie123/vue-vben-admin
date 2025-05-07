@@ -29,6 +29,7 @@
     "@logicflow/core": "catalog:",
     "@logicflow/extension": "catalog:",
     "@types/crypto-js": "catalog:",
+    "@vben-core/menu-ui": "workspace:*",
     "@vben/access": "workspace:*",
     "@vben/common-ui": "workspace:*",
     "@vben/constants": "workspace:*",
