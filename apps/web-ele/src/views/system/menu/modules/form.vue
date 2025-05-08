@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import type { ChangeEvent } from 'ant-design-vue/es/_util/EventInterface';
-
 import type { Recordable } from '@vben/types';
 
 import type { VbenFormSchema } from '#/adapter/form';
@@ -105,10 +103,9 @@ const schema: VbenFormSchema[] = [
   {
     component: 'Input',
     componentProps() {
-      // 不需要处理多语言时就无需这么做
       return {
         addonAfter: titleSuffix.value,
-        onChange({ target: { value } }: ChangeEvent) {
+        onChange({ target: { value } }: Event & { target: HTMLInputElement }) {
           titleSuffix.value = value && $te(value) ? $t(value) : undefined;
         },
       };
@@ -208,8 +205,18 @@ const schema: VbenFormSchema[] = [
     componentProps: {
       allowClear: true,
       class: 'w-full',
-      filterOption(input: string, option: { value: string }) {
-        return option.value.toLowerCase().includes(input.toLowerCase());
+      fetchSuggestions: (
+        queryString: string,
+        callback: (data: { value: string }[]) => void,
+      ) => {
+        const results = queryString
+          ? componentKeys
+              .filter((key) =>
+                key.toLowerCase().includes(queryString.toLowerCase()),
+              )
+              .map((key) => ({ value: key }))
+          : componentKeys.map((key) => ({ value: key }));
+        callback(results);
       },
       options: componentKeys.map((v) => ({ value: v })),
     },

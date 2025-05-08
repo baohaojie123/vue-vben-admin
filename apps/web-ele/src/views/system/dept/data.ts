@@ -53,8 +53,9 @@ export function useSchema(): VbenFormSchema[] {
       label: $t('system.dept.status'),
     },
     {
-      component: 'Textarea',
+      component: 'Input',
       componentProps: {
+        type: 'textarea',
         maxLength: 50,
         rows: 3,
         showCount: true,

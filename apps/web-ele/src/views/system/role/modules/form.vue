@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import type { DataNode } from 'ant-design-vue/es/tree';
-
 import type { Recordable } from '@vben/types';
 
 import type { SystemRoleApi } from '#/api/system/role';
@@ -10,14 +8,19 @@ import { computed, ref } from 'vue';
 import { useVbenDrawer, VbenTree } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
-import { Spin } from 'ant-design-vue';
-
 import { useVbenForm } from '#/adapter/form';
 import { getMenuList } from '#/api/system/menu';
 import { createRole, updateRole } from '#/api/system/role';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
+
+type DataNode = {
+  [key: string]: any;
+  children?: DataNode[];
+  key: string;
+  title: string;
+};
 
 const emits = defineEmits(['success']);
 
@@ -98,7 +101,7 @@ function getNodeClass(node: Recordable<any>) {
   <Drawer :title="getDrawerTitle">
     <Form>
       <template #permissions="slotProps">
-        <Spin :spinning="loadingPermissions" wrapper-class-name="w-full">
+        <div v-loading="loadingPermissions" class="w-full">
           <VbenTree
             :tree-data="permissions"
             multiple
@@ -115,7 +118,7 @@ function getNodeClass(node: Recordable<any>) {
               {{ $t(value.meta.title) }}
             </template>
           </VbenTree>
-        </Spin>
+        </div>
       </template>
     </Form>
   </Drawer>

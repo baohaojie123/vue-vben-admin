@@ -52,7 +52,6 @@ export function useColumns(
       title: $t('system.menu.path'),
       width: 200,
     },
-
     {
       align: 'left',
       field: 'component',
@@ -80,7 +79,6 @@ export function useColumns(
       title: $t('system.menu.status'),
       width: 100,
     },
-
     {
       align: 'right',
       cellRender: {

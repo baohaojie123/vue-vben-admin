@@ -27,7 +27,10 @@ export function useFormSchema(): VbenFormSchema[] {
       label: $t('system.role.status'),
     },
     {
-      component: 'Textarea',
+      component: 'Input',
+      componentProps: {
+        type: 'textarea',
+      },
       fieldName: 'remark',
       label: $t('system.role.remark'),
     },
@@ -67,7 +70,12 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: $t('system.role.remark'),
     },
     {
-      component: 'RangePicker',
+      component: 'DatePicker',
+      componentProps: {
+        type: 'daterange',
+        'start-placeholder': '开始日期',
+        'end-placeholder': '结束日期',
+      },
       fieldName: 'createTime',
       label: $t('system.role.createTime'),
     },

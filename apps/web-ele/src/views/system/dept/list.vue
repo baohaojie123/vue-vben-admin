@@ -50,21 +50,22 @@ function onCreate() {
  * @param row
  */
 function onDelete(row: SystemDeptApi.SystemDept) {
-  const hideLoading = ElMessage.warning({
+  const loadingInstance = ElMessage({
     message: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
+    type: 'info',
     key: 'action_process_msg',
   });
   deleteDept(row.id)
     .then(() => {
-      message.success({
-        content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+      ElMessage.success({
+        message: $t('ui.actionMessage.deleteSuccess', [row.name]),
         key: 'action_process_msg',
       });
       refreshGrid();
     })
     .catch(() => {
-      hideLoading();
+      loadingInstance.close();
     });
 }
 

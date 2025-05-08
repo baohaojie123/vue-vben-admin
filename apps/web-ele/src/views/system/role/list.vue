@@ -10,7 +10,7 @@ import type { SystemRoleApi } from '#/api';
 import { Page, useVbenDrawer } from '@vben/common-ui';
 import { Plus } from '@vben/icons';
 
-import { Button, message, Modal } from 'ant-design-vue';
+import { ElButton, ElMessage, ElMessageBox } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteRole, getRoleList, updateRole } from '#/api';
@@ -79,16 +79,13 @@ function onActionClick(e: OnActionClickParams<SystemRoleApi.SystemRole>) {
  */
 function confirm(content: string, title: string) {
   return new Promise((reslove, reject) => {
-    Modal.confirm({
-      content,
-      onCancel() {
-        reject(new Error('已取消'));
-      },
-      onOk() {
-        reslove(true);
-      },
-      title,
-    });
+    ElMessageBox.confirm(content, title, {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+    })
+      .then(() => reslove(true))
+      .catch(() => reject(new Error('已取消')));
   });
 }
 
@@ -123,21 +120,22 @@ function onEdit(row: SystemRoleApi.SystemRole) {
 }
 
 function onDelete(row: SystemRoleApi.SystemRole) {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.name]),
+  const loadingInstance = ElMessage({
+    message: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
+    type: 'info',
     key: 'action_process_msg',
   });
   deleteRole(row.id)
     .then(() => {
-      message.success({
-        content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+      ElMessage.success({
+        message: $t('ui.actionMessage.deleteSuccess', [row.name]),
         key: 'action_process_msg',
       });
       onRefresh();
     })
     .catch(() => {
-      hideLoading();
+      loadingInstance.close();
     });
 }
 
@@ -154,10 +152,10 @@ function onCreate() {
     <FormDrawer />
     <Grid :table-title="$t('system.role.list')">
       <template #toolbar-tools>
-        <Button type="primary" @click="onCreate">
+        <ElButton type="primary" @click="onCreate">
           <Plus class="size-5" />
           {{ $t('ui.actionTitle.create', [$t('system.role.name')]) }}
-        </Button>
+        </ElButton>
       </template>
     </Grid>
   </Page>

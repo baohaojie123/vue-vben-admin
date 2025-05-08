@@ -92,9 +92,10 @@ function onAppend(row: SystemMenuApi.SystemMenu) {
 }
 
 function onDelete(row: SystemMenuApi.SystemMenu) {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.name]),
+  const loadingInstance = ElMessage({
+    message: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
+    type: 'info',
     key: 'action_process_msg',
   });
   deleteMenu(row.id)
@@ -106,7 +107,7 @@ function onDelete(row: SystemMenuApi.SystemMenu) {
       onRefresh();
     })
     .catch(() => {
-      hideLoading();
+      loadingInstance.close();
     });
 }
 </script>
