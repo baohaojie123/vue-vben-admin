@@ -57,7 +57,7 @@ const formSchema = computed((): VbenFormSchema[] => {
             );
             if (findUser) {
               form.setValues({
-                password: '1234@care',
+                password: '123456',
                 username: findUser.value,
               });
             }

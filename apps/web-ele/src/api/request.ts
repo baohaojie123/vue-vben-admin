@@ -18,7 +18,6 @@ import { ElMessage } from 'element-plus';
 import { useAuthStore } from '#/store';
 
 import { refreshTokenApi } from './core';
-// import { getEncryptData } from './getEncryptData';
 
 const { apiURL } = useAppConfig(import.meta.env, import.meta.env.PROD);
 
@@ -58,7 +57,7 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   }
 
   function formatToken(token: null | string) {
-    return token ? `Bearer ${token}` : `Basic Y2wtc3VpemhlbjpjbC1zdWl6aGVu`;
+    return token ? `Bearer ${token}` : null;
   }
 
   // 请求头处理
@@ -68,7 +67,6 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
 
       config.headers.Authorization = formatToken(accessStore.accessToken);
       config.headers['Accept-Language'] = preferences.app.locale;
-      // getEncryptData(config);
       return config;
     },
   });
@@ -78,7 +76,7 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
     defaultResponseInterceptor({
       codeField: 'code',
       dataField: 'data',
-      successCode: 200,
+      successCode: 0,
     }),
   );
 

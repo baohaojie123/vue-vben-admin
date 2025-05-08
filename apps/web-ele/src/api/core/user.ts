@@ -6,5 +6,5 @@ import { requestClient } from '#/api/request';
  * 获取用户信息
  */
 export async function getUserInfoApi() {
-  return requestClient.get<UserInfo>('/cl-suizhen/login/info/web');
+  return requestClient.get<UserInfo>('/user/info');
 }

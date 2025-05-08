@@ -109,6 +109,11 @@ async function onStatusChange(
       `切换状态`,
     );
     await updateRole(row.id, { status: newStatus });
+    ElMessage.success({
+      message: $t('ui.actionMessage.updateSuccess', [row.name]),
+      key: 'action_process_msg',
+    });
+    onRefresh();
     return true;
   } catch {
     return false;
