@@ -26,6 +26,8 @@ export namespace SystemMenuApi {
     [key: string]: any;
     /** 后端权限标识 */
     authCode: string;
+    /** 菜单排序 */
+    orderNum?: number;
     /** 子级 */
     children?: SystemMenu[];
     /** 组件 */
@@ -95,7 +97,7 @@ export namespace SystemMenuApi {
  */
 async function getMenuList() {
   return requestClient.get<Array<SystemMenuApi.SystemMenu>>(
-    '/system/menu/list',
+    '/system/menus/list',
   );
 }
 
@@ -121,10 +123,8 @@ async function isMenuPathExists(
  * 创建菜单
  * @param data 菜单数据
  */
-async function createMenu(
-  data: Omit<SystemMenuApi.SystemMenu, 'children' | 'id'>,
-) {
-  return requestClient.post('/system/menu', data);
+async function createMenu(data: Omit<SystemMenuApi.SystemMenu, 'children'>) {
+  return requestClient.post('/system/menus/menu', data);
 }
 
 /**
@@ -133,11 +133,8 @@ async function createMenu(
  * @param id 菜单 ID
  * @param data 菜单数据
  */
-async function updateMenu(
-  id: string,
-  data: Omit<SystemMenuApi.SystemMenu, 'children' | 'id'>,
-) {
-  return requestClient.put(`/system/menu/${id}`, data);
+async function updateMenu(data: Omit<SystemMenuApi.SystemMenu, 'children'>) {
+  return requestClient.put(`/system/menus/menu`, data);
 }
 
 /**
@@ -145,7 +142,7 @@ async function updateMenu(
  * @param id 菜单 ID
  */
 async function deleteMenu(id: string) {
-  return requestClient.delete(`/system/menu/${id}`);
+  return requestClient.delete(`/system/menus/menu?menuId=${id}`);
 }
 
 export {

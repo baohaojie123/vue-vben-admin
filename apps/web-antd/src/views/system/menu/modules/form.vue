@@ -18,8 +18,6 @@ import { useVbenForm, z } from '#/adapter/form';
 import {
   createMenu,
   getMenuList,
-  isMenuNameExists,
-  isMenuPathExists,
   SystemMenuApi,
   updateMenu,
 } from '#/api/system/menu';
@@ -56,7 +54,8 @@ const schema: VbenFormSchema[] = [
       .max(30, $t('ui.formRules.maxLength', [$t('system.menu.menuName'), 30]))
       .refine(
         async (value: string) => {
-          return !(await isMenuNameExists(value, formData.value?.id));
+          // return !(await isMenuNameExists(value, formData.value?.id));
+          return true;
         },
         (value) => ({
           message: $t('ui.formRules.alreadyExists', [
@@ -139,7 +138,8 @@ const schema: VbenFormSchema[] = [
       )
       .refine(
         async (value: string) => {
-          return !(await isMenuPathExists(value, formData.value?.id));
+          // return !(await isMenuPathExists(value, formData.value?.id));
+          return true;
         },
         (value) => ({
           message: $t('ui.formRules.alreadyExists', [
@@ -171,7 +171,8 @@ const schema: VbenFormSchema[] = [
         $t('ui.formRules.startWith', [$t('system.menu.path'), '/']),
       )
       .refine(async (value: string) => {
-        return await isMenuPathExists(value, formData.value?.id);
+        // return await isMenuPathExists(value, formData.value?.id);
+        return true;
       }, $t('system.menu.activePathMustExist'))
       .optional(),
   },
@@ -250,6 +251,14 @@ const schema: VbenFormSchema[] = [
     },
     fieldName: 'authCode',
     label: $t('system.menu.authCode'),
+  },
+  {
+    component: 'InputNumber',
+    dependencies: {
+      triggerFields: ['type'],
+    },
+    fieldName: 'orderNum',
+    label: $t('system.menu.orderNum'),
   },
   {
     component: 'RadioGroup',
@@ -472,19 +481,16 @@ async function onSubmit() {
   if (valid) {
     drawerApi.lock();
     const data =
-      await formApi.getValues<
-        Omit<SystemMenuApi.SystemMenu, 'children' | 'id'>
-      >();
+      await formApi.getValues<Omit<SystemMenuApi.SystemMenu, 'children'>>();
     if (data.type === 'link') {
       data.meta = { ...data.meta, link: data.linkSrc };
     } else if (data.type === 'embedded') {
       data.meta = { ...data.meta, iframeSrc: data.linkSrc };
     }
     delete data.linkSrc;
+    data.id = formData.value?.id;
     try {
-      await (formData.value?.id
-        ? updateMenu(formData.value.id, data)
-        : createMenu(data));
+      await (formData.value?.id ? updateMenu(data) : createMenu(data));
       drawerApi.close();
       emit('success');
     } finally {

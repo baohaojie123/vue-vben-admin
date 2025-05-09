@@ -47,6 +47,11 @@ export function useColumns(
       width: 200,
     },
     {
+      field: 'orderNum',
+      title: $t('system.menu.orderNum'),
+      width: 100,
+    },
+    {
       align: 'left',
       field: 'path',
       title: $t('system.menu.path'),

@@ -29,6 +29,7 @@
     "component": "Component",
     "status": "Status",
     "authCode": "Auth Code",
+    "orderNum": "Order Num",
     "badge": "Badge",
     "operation": "Operation",
     "linkSrc": "Link Address",
