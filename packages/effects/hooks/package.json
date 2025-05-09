@@ -20,12 +20,14 @@
     }
   },
   "dependencies": {
+    "@types/crypto-js": "catalog:",
     "@vben-core/composables": "workspace:*",
     "@vben/preferences": "workspace:*",
     "@vben/stores": "workspace:*",
     "@vben/types": "workspace:*",
     "@vben/utils": "workspace:*",
     "@vueuse/core": "catalog:",
+    "crypto-js": "catalog:",
     "vue": "catalog:",
     "vue-router": "catalog:",
     "watermark-js-plus": "catalog:"

@@ -659,6 +659,9 @@ importers:
 
   apps/web-antd:
     dependencies:
+      '@vben-core/menu-ui':
+        specifier: workspace:*
+        version: link:../../packages/@core/ui-kit/menu-ui
       '@vben/access':
         specifier: workspace:*
         version: link:../../packages/effects/access
@@ -1606,6 +1609,9 @@ importers:
 
   packages/effects/hooks:
     dependencies:
+      '@types/crypto-js':
+        specifier: 'catalog:'
+        version: 4.2.2
       '@vben-core/composables':
         specifier: workspace:*
         version: link:../../@core/composables
@@ -1624,6 +1630,9 @@ importers:
       '@vueuse/core':
         specifier: 'catalog:'
         version: 13.1.0(vue@3.5.13(typescript@5.8.3))
+      crypto-js:
+        specifier: 'catalog:'
+        version: 4.2.0
       vue:
         specifier: ^3.5.13
         version: 3.5.13(typescript@5.8.3)
