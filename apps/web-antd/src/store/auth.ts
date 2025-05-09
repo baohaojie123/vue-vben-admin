@@ -4,14 +4,11 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { LOGIN_PATH } from '@vben/constants';
-import { preferences } from '@vben/preferences';
 import { resetAllStores, useAccessStore, useUserStore } from '@vben/stores';
 
-import { notification } from 'ant-design-vue';
 import { defineStore } from 'pinia';
 
-import { getAccessCodesApi, getUserInfoApi, loginApi, logoutApi } from '#/api';
-import { $t } from '#/locales';
+import { getUserInfoApi, loginApi, logoutApi } from '#/api';
 
 export const useAuthStore = defineStore('auth', () => {
   const accessStore = useAccessStore();
@@ -33,23 +30,37 @@ export const useAuthStore = defineStore('auth', () => {
     let userInfo: null | UserInfo = null;
     try {
       loginLoading.value = true;
-      const { accessToken } = await loginApi(params);
-
+      const accessToken = await loginApi({
+        type: 'USERNAME_PASSWORD',
+        username: params.username,
+        password: 'T4M10afPuyPfi2uscnwf9g==',
+      });
       // 如果成功获取到 accessToken
       if (accessToken) {
         accessStore.setAccessToken(accessToken);
 
         // 获取用户信息并存储到 accessStore 中
-        const [fetchUserInfoResult, accessCodes] = await Promise.all([
-          fetchUserInfo(),
-          getAccessCodesApi(),
-        ]);
+        // const [fetchUserInfoResult, accessCodes] = await Promise.all([
+        //   fetchUserInfo(),
+        //   getAccessCodesApi(),
+        // ]);
 
-        userInfo = fetchUserInfoResult;
+        // userInfo = fetchUserInfoResult;
+        userInfo = {
+          realName: 'Vben',
+          roles: ['super'],
+          desc: 'Vben',
+          homePath: '/analytics',
+          token: '1234567890',
+          webMenuList: [],
+          userId: '0',
+          username: 'vben',
+          avatar:
+            'https://unpkg.com/@vbenjs/static-source@0.1.7/source/avatar-v1.webp',
+        };
 
         userStore.setUserInfo(userInfo);
-        accessStore.setAccessCodes(accessCodes);
-
+        // accessStore.setAccessCodes(accessCodes);
         if (accessStore.loginExpired) {
           accessStore.setLoginExpired(false);
         } else {
@@ -60,13 +71,13 @@ export const useAuthStore = defineStore('auth', () => {
               );
         }
 
-        if (userInfo?.realName) {
-          notification.success({
-            description: `${$t('authentication.loginSuccessDesc')}:${userInfo?.realName}`,
-            duration: 3,
-            message: $t('authentication.loginSuccess'),
-          });
-        }
+        // if (userInfo?.realName) {
+        //   notification.success({
+        //     description: `${$t('authentication.loginSuccessDesc')}:${userInfo?.realName}`,
+        //     duration: 3,
+        //     message: $t('authentication.loginSuccess'),
+        //   });
+        // }
       }
     } finally {
       loginLoading.value = false;

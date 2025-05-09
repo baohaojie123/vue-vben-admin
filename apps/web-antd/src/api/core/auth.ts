@@ -5,6 +5,7 @@ export namespace AuthApi {
   export interface LoginParams {
     password?: string;
     username?: string;
+    type: string;
   }
 
   /** 登录接口返回值 */
@@ -21,8 +22,10 @@ export namespace AuthApi {
 /**
  * 登录
  */
-export async function loginApi(data: AuthApi.LoginParams) {
-  return requestClient.post<AuthApi.LoginResult>('/auth/login', data);
+export async function loginApi(params: AuthApi.LoginParams) {
+  return requestClient.get('/login', {
+    params,
+  });
 }
 
 /**

@@ -57,7 +57,9 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   }
 
   function formatToken(token: null | string) {
-    return token ? `Bearer ${token}` : null;
+    return token
+      ? `Bearer ${token}`
+      : `Basic aG9zcGl0YWwtZXllOmhvc3BpdGFsLWV5ZQ==`;
   }
 
   // 请求头处理
@@ -76,7 +78,7 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
     defaultResponseInterceptor({
       codeField: 'code',
       dataField: 'data',
-      successCode: 0,
+      successCode: 200,
     }),
   );
 
