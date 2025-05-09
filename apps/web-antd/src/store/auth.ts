@@ -4,6 +4,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { LOGIN_PATH } from '@vben/constants';
+import { useEncryption } from '@vben/hooks';
 import { preferences } from '@vben/preferences';
 import { resetAllStores, useAccessStore, useUserStore } from '@vben/stores';
 
@@ -29,12 +30,16 @@ export const useAuthStore = defineStore('auth', () => {
   ) {
     // 异步处理用户登录操作并获取 accessToken
     let userInfo: null | UserInfo = null;
+    const encryptionPassword = useEncryption({
+      password: params.password,
+    });
+
     try {
       loginLoading.value = true;
       const accessToken = await loginApi({
         type: 'USERNAME_PASSWORD',
         username: params.username,
-        password: 'T4M10afPuyPfi2uscnwf9g==',
+        password: encryptionPassword.password,
       });
       // 如果成功获取到 accessToken
       if (accessToken) {
@@ -51,7 +56,7 @@ export const useAuthStore = defineStore('auth', () => {
           realName: 'Vben',
           roles: ['super'],
           desc: 'Vben',
-          homePath: '/analytics',
+          homePath: '/workspace',
           token: '1234567890',
           webMenuList: [],
           userId: '0',
