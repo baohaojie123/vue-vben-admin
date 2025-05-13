@@ -14,6 +14,14 @@ import { getConversationListApi } from '#/api';
 const route = useRoute();
 interface RowType {
   id: string;
+  clBotId: string;
+  cozeBotId: string;
+  createTime: string;
+  deptId1: string;
+  deptId2: string;
+  deptId3: string;
+  name: string;
+  userId: string;
 }
 
 const formOptions: VbenFormProps = {
@@ -84,7 +92,7 @@ const gridOptions: VxeTableGridOptions<RowType> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        return await getConversationListApi({
+        const res = await getConversationListApi({
           pageAsc: false,
           pageCurrent: page.currentPage,
           pageSearchCount: true,
@@ -92,6 +100,7 @@ const gridOptions: VxeTableGridOptions<RowType> = {
           clBotId: route.query.id,
           ...formValues,
         });
+        return { items: res.records, total: res.total };
       },
     },
   },
