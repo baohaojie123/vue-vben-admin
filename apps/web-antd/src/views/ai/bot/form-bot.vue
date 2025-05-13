@@ -1,7 +1,10 @@
 <script lang="ts" setup>
+import { h, ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
+import { Vue3JsonEditor } from 'vue3-json-editor';
 
 import { useVbenForm } from '#/adapter/form';
 import { mergeBotApi } from '#/api';
@@ -9,8 +12,14 @@ import { mergeBotApi } from '#/api';
 defineOptions({
   name: 'FormBot',
 });
+
+const initialJsonValue = ref({});
+
 const [Form, formApi] = useVbenForm({
   handleSubmit: onSubmit,
+  commonConfig: {
+    labelWidth: 140,
+  },
   schema: [
     {
       component: 'Input',
@@ -60,9 +69,17 @@ const [Form, formApi] = useVbenForm({
       rules: 'required',
     },
     {
-      component: 'Input',
+      component: h(Vue3JsonEditor),
       componentProps: {
-        placeholder: '请输入',
+        modelValue: initialJsonValue,
+        // mode: 'code',
+        style: {
+          width: '100%',
+          height: '400px',
+        },
+        onJsonChange: (value: Record<string, any>) => {
+          formApi.setFieldValue('clBotSetting', value);
+        },
       },
       fieldName: 'clBotSetting',
       label: '智能体配置',
@@ -73,6 +90,7 @@ const [Form, formApi] = useVbenForm({
 
 const [Modal, modalApi] = useVbenModal({
   fullscreenButton: false,
+  class: 'w-1/2',
   onCancel() {
     modalApi.close();
   },
@@ -85,6 +103,7 @@ const [Modal, modalApi] = useVbenModal({
       const data = modalApi.getData<Record<string, any>>();
       modalApi.setState({ title: data.id ? '编辑智能体' : '新增智能体' });
       if (data) {
+        initialJsonValue.value = data.clBotSetting || {};
         formApi.setValues({
           id: data.id,
           name: data.name,
@@ -92,7 +111,7 @@ const [Modal, modalApi] = useVbenModal({
           cozeBotIdList: Array.isArray(data.cozeBotIdList)
             ? data.cozeBotIdList.join(',')
             : '',
-          clBotSetting: data.clBotSetting,
+          clBotSetting: data.clBotSetting || {},
         });
       }
     }
@@ -101,6 +120,7 @@ const [Modal, modalApi] = useVbenModal({
 
 function onSubmit(values: Record<string, any>) {
   values.cozeBotIdList = values.cozeBotIdList.split(',');
+  values.clBotSetting = values.clBotSetting || {};
 
   mergeBotApi(values).then(() => {
     message.success({

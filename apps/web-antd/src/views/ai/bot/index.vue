@@ -4,7 +4,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { useRouter } from 'vue-router';
 
-import { JsonViewer, Page, useVbenModal } from '@vben/common-ui';
+import { Page, useVbenModal } from '@vben/common-ui';
 
 import { Button } from 'ant-design-vue';
 
@@ -123,11 +123,7 @@ function handleEdit(row: RowType) {
 
 <template>
   <Page auto-content-height>
-    <FormModel>
-      <template #clBotSetting="slotProps">
-        <JsonViewer :value="slotProps.clBotSetting" />
-      </template>
-    </FormModel>
+    <FormModel />
     <Grid>
       <template #toolbar-actions>
         <Button type="primary" @click="openFormModal"> 新增智能体 </Button>
