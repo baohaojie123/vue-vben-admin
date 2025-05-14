@@ -72,10 +72,10 @@ const [Form, formApi] = useVbenForm({
       component: h(Vue3JsonEditor),
       componentProps: {
         modelValue: initialJsonValue,
-        // mode: 'code',
+        mode: 'code',
         style: {
           width: '100%',
-          height: '400px',
+          height: '100%',
         },
         onJsonChange: (value: Record<string, any>) => {
           formApi.setFieldValue('clBotSetting', value);

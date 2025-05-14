@@ -94,7 +94,7 @@ defineExpose({
 <template>
   <div @keydown.enter.prevent="handleSubmit">
     <slot name="title">
-      <Title>
+      <!-- <Title>
         <slot name="title">
           {{ title || `${$t('authentication.welcomeBack')} 👋🏻` }}
         </slot>
@@ -105,7 +105,7 @@ defineExpose({
             </slot>
           </span>
         </template>
-      </Title>
+      </Title> -->
     </slot>
 
     <Form />
