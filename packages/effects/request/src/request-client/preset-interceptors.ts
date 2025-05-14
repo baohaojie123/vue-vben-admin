@@ -25,7 +25,6 @@ export const defaultResponseInterceptor = ({
       if (config.responseReturn === 'raw') {
         return response;
       }
-
       if (status >= 200 && status < 400) {
         if (config.responseReturn === 'body') {
           return responseData;
@@ -61,7 +60,7 @@ export const authenticateResponseInterceptor = ({
     rejected: async (error) => {
       const { config, response } = error;
       // 如果不是 401 错误，直接抛出异常
-      if (response?.status !== 401) {
+      if (response?.data.code !== 401) {
         throw error;
       }
       // 判断是否启用了 refreshToken 功能
@@ -155,7 +154,8 @@ export const errorMessageResponseInterceptor = (
           break;
         }
         default: {
-          errorMessage = $t('ui.fallback.http.internalServerError');
+          // errorMessage = $t('ui.fallback.http.internalServerError');
+          errorMessage = error?.data?.msg;
         }
       }
       makeErrorMessage?.(errorMessage, error);
