@@ -2,25 +2,21 @@
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { useRouter } from 'vue-router';
-
 import { Page, useVbenModal } from '@vben/common-ui';
 
 import { Button } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getBotListApi } from '#/api';
+import { getStoreListApi } from '#/api';
 
-import FormBot from './form-bot.vue';
-
-const router = useRouter();
+import FormStore from './form-store.vue';
 
 interface RowType {
   id: string;
+  region: string;
   name: string;
-  description: string;
-  cozeBotIdList: string[];
-  clBotSetting: Record<string, any>;
+  status: string;
+  statusDisplay: string;
 }
 
 const formOptions: VbenFormProps = {
@@ -29,13 +25,24 @@ const formOptions: VbenFormProps = {
   schema: [
     {
       component: 'Input',
-      fieldName: 'name',
-      label: '智能体名称',
+      fieldName: 'region',
+      label: '连锁区域',
     },
     {
       component: 'Input',
-      fieldName: 'description',
-      label: '智能体描述',
+      fieldName: 'name',
+      label: '连锁名称',
+    },
+    {
+      component: 'Select',
+      fieldName: 'status',
+      label: '状态',
+      componentProps: {
+        options: [
+          { label: '已启用', value: 'OPEN' },
+          { label: '已禁用', value: 'CLOSE' },
+        ],
+      },
     },
   ],
   // 控制表单是否显示折叠按钮
@@ -48,16 +55,16 @@ const formOptions: VbenFormProps = {
 
 const gridOptions: VxeTableGridOptions<RowType> = {
   columns: [
-    { field: 'id', title: 'ID' },
-    { field: 'name', title: '名称' },
-    { field: 'description', title: '描述' },
-
+    { field: 'id', title: '连锁ID' },
+    { field: 'region', title: '连锁区域' },
+    { field: 'name', title: '连锁名称' },
+    { field: 'statusDisplay', title: '状态' },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
       title: '操作',
-      width: 240,
+      width: 100,
     },
   ],
   exportConfig: {},
@@ -67,12 +74,16 @@ const gridOptions: VxeTableGridOptions<RowType> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        const res = await getBotListApi({
+        const res = await getStoreListApi({
           pageAsc: false,
           pageCurrent: page.currentPage,
           pageSearchCount: true,
           pageSize: page.pageSize,
           ...formValues,
+        });
+        res.records.map((item: any) => {
+          item.statusDisplay = item.status === 'OPEN' ? '已启用' : '已禁用';
+          return item;
         });
 
         return { items: res.records, total: res.total };
@@ -94,7 +105,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions,
 });
 const [FormModel, formModalApi] = useVbenModal({
-  connectedComponent: FormBot,
+  connectedComponent: FormStore,
   onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       gridApi.reload();
@@ -103,14 +114,6 @@ const [FormModel, formModalApi] = useVbenModal({
 });
 function openFormModal() {
   formModalApi.setData(null).open();
-}
-function handleViewConversationList(id: string) {
-  router.push({
-    path: '/ai/bot/conversation-list',
-    query: {
-      id,
-    },
-  });
 }
 function handleEdit(row: RowType) {
   formModalApi.setData(row).open();
@@ -122,17 +125,9 @@ function handleEdit(row: RowType) {
     <FormModel />
     <Grid>
       <template #toolbar-actions>
-        <Button type="primary" @click="openFormModal"> 新增智能体 </Button>
+        <Button type="primary" @click="openFormModal"> 新增连锁 </Button>
       </template>
       <template #action="{ row }">
-        <Button type="primary">体验</Button>
-        <Button
-          type="primary"
-          @click="handleViewConversationList(row.id)"
-          class="ml-2"
-        >
-          查看
-        </Button>
         <Button type="primary" class="ml-2" @click="handleEdit(row)">
           编辑
         </Button>

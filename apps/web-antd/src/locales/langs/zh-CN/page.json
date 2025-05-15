@@ -16,5 +16,11 @@
     "bot": "智能体广场",
     "conversationList": "会话列表",
     "messageList": "消息列表"
+  },
+  "user": {
+    "title": "用户管理",
+    "shop": "门店管理",
+    "store": "连锁管理",
+    "employee": "员工管理"
   }
 }

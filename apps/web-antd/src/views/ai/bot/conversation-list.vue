@@ -63,10 +63,6 @@ const formOptions: VbenFormProps = {
 };
 
 const gridOptions: VxeTableGridOptions<RowType> = {
-  checkboxConfig: {
-    highlight: true,
-    labelField: 'name',
-  },
   columns: [
     { field: 'id', title: 'Coze会话ID' },
     { field: 'clBotId', title: 'cl智能体ID' },
