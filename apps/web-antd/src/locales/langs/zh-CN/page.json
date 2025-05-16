@@ -6,6 +6,9 @@
     "qrcodeLogin": "二维码登录",
     "forgetPassword": "忘记密码"
   },
+  "home": {
+    "title": "首页"
+  },
   "dashboard": {
     "title": "概览",
     "analytics": "分析页",

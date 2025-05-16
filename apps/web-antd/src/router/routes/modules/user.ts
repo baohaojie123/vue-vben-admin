@@ -5,7 +5,7 @@ import { $t } from '#/locales';
 const routes: RouteRecordRaw[] = [
   {
     meta: {
-      icon: 'carbon:user-avatar-filled',
+      icon: 'carbon:user-avatar',
       keepAlive: true,
       order: 1000,
       title: $t('page.user.title'),
