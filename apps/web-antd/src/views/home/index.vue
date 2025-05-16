@@ -223,26 +223,24 @@ const overviewItems: AnalysisOverviewItem[] = [
 
 <template>
   <Page auto-content-height>
-    <div class="p-5">
-      <AnalysisOverview :items="overviewItems" class="mb-5" />
-      <FormModel />
-      <Grid>
-        <template #toolbar-buttons>
-          <Tabs
-            type="card"
-            v-model:active-key="activeTab"
-            @change="handleTabChange"
-          >
-            <Tabs.TabPane key="practiced" tab="已练习" />
-            <Tabs.TabPane key="unpracticed" tab="未练习" />
-          </Tabs>
-        </template>
-        <template #action="{ row }">
-          <Button type="primary" class="ml-2" @click="handleEdit(row)">
-            查看
-          </Button>
-        </template>
-      </Grid>
-    </div>
+    <AnalysisOverview :items="overviewItems" class="mb-3" />
+    <FormModel />
+    <Grid>
+      <template #toolbar-buttons>
+        <Tabs
+          type="card"
+          v-model:active-key="activeTab"
+          @change="handleTabChange"
+        >
+          <Tabs.TabPane key="practiced" tab="已练习" />
+          <Tabs.TabPane key="unpracticed" tab="未练习" />
+        </Tabs>
+      </template>
+      <template #action="{ row }">
+        <Button type="primary" class="ml-2" @click="handleEdit(row)">
+          查看
+        </Button>
+      </template>
+    </Grid>
   </Page>
 </template>
