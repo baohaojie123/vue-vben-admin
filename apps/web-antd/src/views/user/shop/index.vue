@@ -21,7 +21,7 @@ interface RowType {
   status: string;
   statusDisplay: string;
 }
-const storeOptions = ref([]);
+const storeOptions = ref<{ label: string; value: string }[]>([]);
 
 const getStoreList = async (value: string) => {
   const options = await getStoreListApi({
@@ -50,15 +50,13 @@ const formOptions: VbenFormProps = {
       fieldName: 'storeDeptId',
       label: '连锁名称',
       defaultValue: '',
-      componentProps: () => {
-        return {
-          showSearch: true,
-          filterOption: false,
-          options: storeOptions,
-          onSearch: handleSearch,
-          placeholder: '请输入搜索',
-        };
-      },
+      componentProps: () => ({
+        showSearch: true,
+        filterOption: false,
+        options: storeOptions.value,
+        onSearch: handleSearch,
+        placeholder: '请输入搜索',
+      }),
     },
     {
       component: 'Input',

@@ -25,7 +25,7 @@ interface RowType {
   status: string;
   statusDisplay: string;
 }
-const storeOptions = ref([]);
+const storeOptions = ref<{ label: string; value: string }[]>([]);
 
 const getStoreList = async (value: string) => {
   const options = await getStoreListApi({
@@ -41,7 +41,7 @@ const getStoreList = async (value: string) => {
     value: item.id,
   }));
 };
-const shopOptions = ref([]);
+const shopOptions = ref<{ label: string; value: string }[]>([]);
 const getShopList = async (value: string) => {
   const options = await getShopListApi({
     pageAsc: false,
@@ -72,32 +72,28 @@ const formOptions: VbenFormProps = {
       fieldName: 'storeDeptId',
       label: '连锁名称',
       defaultValue: '',
-      componentProps: () => {
-        return {
-          allowClear: true,
-          showSearch: true,
-          filterOption: false,
-          options: storeOptions,
-          onSearch: handleSearchStore,
-          placeholder: '请输入搜索',
-        };
-      },
+      componentProps: () => ({
+        allowClear: true,
+        showSearch: true,
+        filterOption: false,
+        options: storeOptions.value,
+        onSearch: handleSearchStore,
+        placeholder: '请输入搜索',
+      }),
     },
     {
       component: 'Select',
       fieldName: 'shopDeptId',
       label: '门店名称',
       defaultValue: '',
-      componentProps: () => {
-        return {
-          allowClear: true,
-          showSearch: true,
-          filterOption: false,
-          options: shopOptions,
-          onSearch: handleSearchShop,
-          placeholder: '请输入搜索',
-        };
-      },
+      componentProps: () => ({
+        allowClear: true,
+        showSearch: true,
+        filterOption: false,
+        options: shopOptions.value,
+        onSearch: handleSearchShop,
+        placeholder: '请输入搜索',
+      }),
     },
     {
       component: 'Input',
