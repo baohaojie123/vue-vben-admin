@@ -56,7 +56,7 @@ export const useAuthStore = defineStore('auth', () => {
           realName: 'Vben',
           roles: ['super'],
           desc: 'Vben',
-          homePath: '/workspace',
+          homePath: '/home',
           token: '1234567890',
           webMenuList: [],
           userId: '0',
