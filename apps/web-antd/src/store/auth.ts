@@ -52,18 +52,19 @@ export const useAuthStore = defineStore('auth', () => {
         // ]);
 
         // userInfo = fetchUserInfoResult;
-        userInfo = {
-          realName: 'Vben',
-          roles: ['super'],
-          desc: 'Vben',
-          homePath: '/home',
-          token: '1234567890',
-          webMenuList: [],
-          userId: '0',
-          username: 'vben',
-          avatar:
-            'https://unpkg.com/@vbenjs/static-source@0.1.7/source/avatar-v1.webp',
-        };
+        userInfo = await fetchUserInfo();
+        // userInfo = {
+        //   realName: 'Vben',
+        //   roles: ['super'],
+        //   desc: 'Vben',
+        //   homePath: '/home',
+        //   token: '1234567890',
+        //   webMenuList: [],
+        //   userId: '0',
+        //   username: 'vben',
+        //   avatar:
+        //     'https://unpkg.com/@vbenjs/static-source@0.1.7/source/avatar-v1.webp',
+        // };
 
         userStore.setUserInfo(userInfo);
         // accessStore.setAccessCodes(accessCodes);
