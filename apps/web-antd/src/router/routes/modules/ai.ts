@@ -32,6 +32,15 @@ const routes: RouteRecordRaw[] = [
       },
       {
         meta: {
+          title: $t('page.ai.az4ConversationList'),
+          hideInMenu: true,
+        },
+        name: 'Az4ConversationList',
+        path: '/ai/bot/az4-conversation-list',
+        component: () => import('#/views/ai/bot/az4-conversation-list.vue'),
+      },
+      {
+        meta: {
           title: $t('page.ai.messageList'),
           hideInMenu: true,
         },

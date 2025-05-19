@@ -181,7 +181,7 @@ const router = useRouter();
 
 function handleEdit(row: RowType) {
   router.push({
-    path: '/ai/bot/conversation-list',
+    path: '/ai/bot/az4-conversation-list',
     query: {
       userId: row.id,
     },
