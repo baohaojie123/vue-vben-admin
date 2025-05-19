@@ -6,7 +6,7 @@ import type { AnalysisOverviewItem } from '@vben/common-ui';
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { ref } from 'vue';
+import { markRaw, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { AnalysisOverview, Page } from '@vben/common-ui';
@@ -195,22 +195,22 @@ const getOverview = async (params?: { enterpriseDeptId?: string }) => {
   if (res) {
     overviewItems.value = [
       {
-        icon: SvgCardIcon,
+        icon: markRaw(SvgCardIcon),
         title: '员工数',
         value: res.employeeCount,
       },
       {
-        icon: SvgCakeIcon,
+        icon: markRaw(SvgCakeIcon),
         title: '已会话员工数',
         value: res.employeeConversedCount,
       },
       {
-        icon: SvgDownloadIcon,
+        icon: markRaw(SvgDownloadIcon),
         title: '未会话员工数',
         value: res.employeeNotConversedCount,
       },
       {
-        icon: SvgBellIcon,
+        icon: markRaw(SvgBellIcon),
         title: '会话次数',
         value: res.conversationCount,
       },
