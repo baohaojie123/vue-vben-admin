@@ -41,7 +41,10 @@ withDefaults(defineProps<Props>(), {
           />
           <VbenIcon :icon="item.icon" class="size-8 flex-shrink-0" />
         </CardContent>
-        <CardFooter class="justify-between">
+        <CardFooter
+          class="justify-between"
+          v-if="item.totalTitle && item.totalValue"
+        >
           <span>{{ item.totalTitle }}</span>
           <VbenCountToAnimator
             :end-val="item.totalValue"

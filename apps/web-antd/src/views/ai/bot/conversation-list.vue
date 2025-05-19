@@ -88,6 +88,9 @@ const gridOptions: VxeTableGridOptions<RowType> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
+        if (route.query.userId) {
+          formValues.userId = route.query.userId;
+        }
         const res = await getConversationListApi({
           pageAsc: false,
           pageCurrent: page.currentPage,

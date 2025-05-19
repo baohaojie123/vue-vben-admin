@@ -6,22 +6,22 @@ import type { AnalysisOverviewItem } from '@vben/common-ui';
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { ref } from 'vue';
+import { markRaw, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
-import { AnalysisOverview, Page, useVbenModal } from '@vben/common-ui';
+import { AnalysisOverview, Page } from '@vben/common-ui';
 import {
   SvgBellIcon,
   SvgCakeIcon,
   SvgCardIcon,
   SvgDownloadIcon,
 } from '@vben/icons';
+import { useUserStore } from '@vben/stores';
 
 import { Button, Tabs } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getEmployeeListApi, getStoreListApi } from '#/api';
-
-import FormEmployee from './form-employee.vue';
+import { getEmployeeListApi, getOverviewApi, getStoreListApi } from '#/api';
 
 interface RowType {
   id: string;
@@ -176,55 +176,62 @@ const [Grid, gridApi] = useVbenVxeGrid({
   formOptions,
   gridOptions,
 });
-const [FormModel, formModalApi] = useVbenModal({
-  connectedComponent: FormEmployee,
-  onOpenChange(isOpen: boolean) {
-    if (!isOpen) {
-      gridApi.reload();
-    }
-  },
-});
+
+const router = useRouter();
 
 function handleEdit(row: RowType) {
-  formModalApi.setData(row).open();
+  router.push({
+    path: '/ai/bot/conversation-list',
+    query: {
+      userId: row.id,
+    },
+  });
 }
 
-const overviewItems: AnalysisOverviewItem[] = [
-  {
-    icon: SvgCardIcon,
-    title: '药师数量',
-    totalTitle: '总药师数',
-    totalValue: 120_000,
-    value: 2000,
-  },
-  {
-    icon: SvgCakeIcon,
-    title: '练习次数',
-    totalTitle: '总练习次数',
-    totalValue: 500_000,
-    value: 20_000,
-  },
-  {
-    icon: SvgDownloadIcon,
-    title: '已练习药师',
-    totalTitle: '总已练习药师',
-    totalValue: 120_000,
-    value: 8000,
-  },
-  {
-    icon: SvgBellIcon,
-    title: '未练习药师',
-    totalTitle: '总未练习药师',
-    totalValue: 50_000,
-    value: 5000,
-  },
-];
+const overviewItems = ref<AnalysisOverviewItem[]>([]);
+
+const getOverview = async (params?: { enterpriseDeptId?: string }) => {
+  const res = await getOverviewApi(params || {});
+  if (res) {
+    overviewItems.value = [
+      {
+        icon: markRaw(SvgCardIcon),
+        title: '员工数',
+        value: res.employeeCount,
+      },
+      {
+        icon: markRaw(SvgCakeIcon),
+        title: '已会话员工数',
+        value: res.employeeConversedCount,
+      },
+      {
+        icon: markRaw(SvgDownloadIcon),
+        title: '未会话员工数',
+        value: res.employeeNotConversedCount,
+      },
+      {
+        icon: markRaw(SvgBellIcon),
+        title: '会话次数',
+        value: res.conversationCount,
+      },
+    ];
+  }
+};
+
+const userStore = useUserStore();
+
+getOverview({
+  enterpriseDeptId: userStore.userInfo?.enterpriseDeptId,
+});
 </script>
 
 <template>
   <Page auto-content-height>
-    <AnalysisOverview :items="overviewItems" class="mb-3" />
-    <FormModel />
+    <AnalysisOverview
+      :items="overviewItems"
+      class="mb-3"
+      v-if="overviewItems.length > 0"
+    />
     <Grid>
       <template #toolbar-buttons>
         <Tabs
