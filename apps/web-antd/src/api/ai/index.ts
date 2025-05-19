@@ -17,4 +17,17 @@ async function getConversationListApi(params: Recordable<any>) {
   return requestClient.post('/ai/coze/conversations/search', params);
 }
 
-export { getBotListApi, getConversationListApi, mergeBotApi };
+// 查询会话消息列表
+async function getConversationMsgListApi(data: Recordable<any>) {
+  return requestClient.post(
+    '/ai/coze/conversations/conversation/messages',
+    data,
+  );
+}
+
+export {
+  getBotListApi,
+  getConversationListApi,
+  getConversationMsgListApi,
+  mergeBotApi,
+};
