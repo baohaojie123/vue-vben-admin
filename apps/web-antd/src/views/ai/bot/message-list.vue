@@ -8,8 +8,11 @@ import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
+import { formatDateTime } from '@vben/utils';
 
-// import { Tag } from 'antd';
+// import { SyncOutlined } from '@ant-design/icons-vue';
+import { Tag } from 'ant-design-vue';
+
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getConversationMsgListApi } from '#/api';
 
@@ -19,9 +22,9 @@ defineOptions({
 
 interface RowType {
   id: number;
-  name: string;
   role: string;
-  sex: string;
+  content: string;
+  created_at: number;
 }
 
 interface PAGINATION_MESSAHE_LIST {
@@ -32,11 +35,13 @@ interface PAGINATION_MESSAHE_LIST {
   limit: number; // 每页数量
   hasMore: boolean; // 是否有更多
   isLoadAll: boolean; // 是否已经加载完 false 未加载完 true 加载完
+  total: number; // 总条数
 }
 const route = useRoute();
-
+// 数据源
+const dataList = ref<RowType[]>([]);
 // 加载
-const isLoading = ref(false);
+const isLoading = ref<boolean | undefined>(false);
 // 分页
 const pagination = ref({
   order: 'desc', // 排序字段
@@ -46,6 +51,7 @@ const pagination = ref({
   hasMore: false, // 是否有更多
   limit: 20, // 每页数量
   isLoadAll: false, // 是否已经加载完
+  total: 0, // 总条数
 } as PAGINATION_MESSAHE_LIST);
 
 const gridOptions: VxeTableGridOptions<RowType> = {
@@ -57,15 +63,39 @@ const gridOptions: VxeTableGridOptions<RowType> = {
     {
       field: 'created_at',
       title: '创建时间',
+      // formatter: 'formatDateTime',
+      formatter: ({ row }) => {
+        const data = formatDateTime(row.created_at * 1000);
+        return data;
+      },
       width: 200,
     },
   ],
+  loading: isLoading.value,
   data: [],
   exportConfig: {},
   height: 'auto',
   keepSource: true,
+  proxyConfig: {
+    ajax: {
+      // 接收 Promise
+      query: async () => {
+        initPagination();
+
+        const res = await loadList();
+        // console.log('🚀 ~ query: ~ res:', res);
+        return res;
+      },
+    },
+  },
   pagerConfig: {
-    enabled: false,
+    layouts: ['Total', 'Home'],
+    total: 0,
+    slots: {
+      // 自定义插槽
+      total: 'pagerTotal',
+      home: 'pagerHome',
+    },
   },
   scrollY: {
     enabled: true,
@@ -75,7 +105,7 @@ const gridOptions: VxeTableGridOptions<RowType> = {
   toolbarConfig: {
     custom: true,
     export: true,
-    refresh: false,
+    refresh: true,
     resizable: true,
     search: true,
     zoom: true,
@@ -103,15 +133,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions,
   gridEvents,
 });
-// const dataList: RowType[] = [];
-const dataList = ref<RowType[]>([]);
+
 // 模拟行数据
 const loadList = async () => {
   try {
     isLoading.value = true;
+    gridApi.setGridOptions({
+      loading: true,
+    });
     // 是否已经加载完
     if (pagination.value.isLoadAll) {
-      isLoading.value = false;
+      cancelLoading();
       return;
     }
 
@@ -142,7 +174,7 @@ const loadList = async () => {
     const res = await getConversationMsgListApi(form);
 
     if (res) {
-      isLoading.value = false;
+      cancelLoading();
 
       // 需要将分页进行赋值
       pagination.value = {
@@ -160,16 +192,46 @@ const loadList = async () => {
         // 后续加载，将新消息插入到现有消息前面
         dataList.value.push(...res.items);
       }
-      gridApi.setGridOptions({ data: dataList.value });
+
+      gridApi.setGridOptions({
+        data: dataList.value,
+        pagerConfig: {
+          total: dataList.value.length,
+        },
+      });
+      pagination.value.total = dataList.value.length;
+
+      return { items: dataList.value, total: dataList.value.length };
     }
   } catch (error) {
-    isLoading.value = false;
+    cancelLoading();
     console.error('Failed to load data:', error);
   }
 };
+// 初始化 分页
+const initPagination = () => {
+  dataList.value = [];
+  pagination.value = {
+    order: 'desc', // 排序字段
+    chatId: '', // 会话id
+    beforeId: 0, // 上一条消息id
+    afterId: 0, // 下一条消息id
+    hasMore: false, // 是否有更多
+    limit: 20, // 每页数量
+    isLoadAll: false, // 是否已经加载完
+    total: 0, // 总条数
+  };
+};
 
+// 状态loading 取消
+const cancelLoading = () => {
+  isLoading.value = false;
+  gridApi.setGridOptions({
+    loading: false,
+  });
+};
 onMounted(() => {
-  loadList();
+  // loadList();
 });
 </script>
 <template>
@@ -177,7 +239,17 @@ onMounted(() => {
     <Grid>
       <template #role="{ row }">
         <Tag v-if="row.role === 'assistant'" color="red"> AI助手 </Tag>
-        <Tag v-if="row.role === 'user'" color="purple">用户</Tag>
+        <Tag v-if="row.role === 'user'" color="cyan">用户</Tag>
+      </template>
+      <template #pagerTotal>
+        <span class="mr-3"> 共 {{ pagination.total }} 条记录 </span>
+      </template>
+      <template #pagerHome>
+        <Tag color="gold" v-if="!pagination.isLoadAll">
+          <template #icon> </template>
+          还未加载完毕...
+        </Tag>
+        <Tag color="processing" v-else> 已经加载完毕 </Tag>
       </template>
     </Grid>
   </Page>
