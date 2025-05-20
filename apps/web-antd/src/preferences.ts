@@ -21,4 +21,11 @@ export const overridesPreferences = defineOverridesPreferences({
   theme: {
     mode: 'light',
   },
+  logo: {
+    source: `/images/logo/icon_only.ico`,
+  },
+  widget: {
+    notification: false,
+    languageToggle: false,
+  },
 });
