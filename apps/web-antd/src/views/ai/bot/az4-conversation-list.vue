@@ -23,19 +23,15 @@ interface RowType {
 const formOptions: VbenFormProps = {
   // 默认展开
   collapsed: false,
-  fieldMappingTime: [['date', ['start', 'end']]],
   schema: [
     {
       component: 'Input',
-      defaultValue: '',
-      fieldName: 'clBotId',
-      label: 'cl智能体ID',
-    },
-    {
-      component: 'Input',
-      defaultValue: '',
-      fieldName: 'userId',
-      label: '用户ID',
+      componentProps: () => ({
+        placeholder: '请输入会话名称',
+        allowClear: true,
+      }),
+      fieldName: 'name',
+      label: '会话名称',
     },
   ],
   // 控制表单是否显示折叠按钮
@@ -112,9 +108,8 @@ function handleViewMessageList(id: string) {
     <Grid>
       <template #action="{ row }">
         <Button type="primary" @click="handleViewMessageList(row.id)">
-          消息列表
+          查看
         </Button>
-        <Button type="primary" class="ml-2">查看</Button>
       </template>
     </Grid>
   </Page>

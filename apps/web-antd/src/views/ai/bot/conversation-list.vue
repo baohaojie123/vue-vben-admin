@@ -27,29 +27,49 @@ interface RowType {
 const formOptions: VbenFormProps = {
   // 默认展开
   collapsed: false,
-  fieldMappingTime: [['date', ['start', 'end']]],
   schema: [
     {
       component: 'Input',
-      defaultValue: '',
+      componentProps: () => ({
+        placeholder: '请输入会话名称',
+        allowClear: true,
+      }),
+      fieldName: 'name',
+      label: '会话名称',
+    },
+    {
+      component: 'Input',
+      componentProps: () => ({
+        placeholder: '请输入用户ID',
+        allowClear: true,
+      }),
       fieldName: 'userId',
       label: '用户ID',
     },
     {
       component: 'Input',
-      defaultValue: '',
+      componentProps: () => ({
+        placeholder: '请输入自定义部门ID1',
+        allowClear: true,
+      }),
       fieldName: 'deptId1',
       label: '自定义部门ID1',
     },
     {
       component: 'Input',
-      defaultValue: '',
+      componentProps: () => ({
+        placeholder: '请输入自定义部门ID2',
+        allowClear: true,
+      }),
       fieldName: 'deptId2',
       label: '自定义部门ID2',
     },
     {
       component: 'Input',
-      defaultValue: '',
+      componentProps: () => ({
+        placeholder: '请输入自定义部门ID3',
+        allowClear: true,
+      }),
       fieldName: 'deptId3',
       label: '自定义部门ID3',
     },
@@ -133,9 +153,8 @@ function handleViewMessageList(id: string) {
     <Grid>
       <template #action="{ row }">
         <Button type="primary" @click="handleViewMessageList(row.id)">
-          消息列表
+          查看
         </Button>
-        <Button type="primary" class="ml-2">查看</Button>
       </template>
     </Grid>
   </Page>
