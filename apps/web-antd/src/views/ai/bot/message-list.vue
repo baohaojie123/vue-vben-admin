@@ -21,7 +21,6 @@ defineOptions({
 });
 
 interface RowType {
-  id: number;
   role: string;
   content: string;
   created_at: number;
@@ -44,7 +43,7 @@ const dataList = ref<RowType[]>([]);
 const isLoading = ref<boolean | undefined>(false);
 // 分页
 const pagination = ref({
-  order: 'desc', // 排序字段
+  order: 'asc', // 排序字段
   chatId: '', // 会话id
   beforeId: 0, // 上一条消息id
   afterId: 0, // 下一条消息id
@@ -57,9 +56,8 @@ const pagination = ref({
 const gridOptions: VxeTableGridOptions<RowType> = {
   columns: [
     { type: 'seq', width: 70 },
-    { field: 'id', title: 'ID' },
     { field: 'role', title: '角色', slots: { default: 'role' } },
-    { field: 'content', title: '消息内容', minWidth: 400 },
+    { field: 'content', title: '消息内容', minWidth: 400 ,align: 'left'},
     {
       field: 'created_at',
       title: '创建时间',
@@ -158,7 +156,6 @@ const loadList = async () => {
       limit: pagination.value.limit,
       conversation_id: route.query.id?.toString(),
     };
-
     if (pagination.value.hasMore) {
       // 按创建时间升序排序，最早的消息排序最前。
       if (pagination.value.order === 'desc') {
@@ -167,7 +164,7 @@ const loadList = async () => {
       }
       // 向前翻页
       if (pagination.value.order === 'asc') {
-        form.before_id = pagination.value.beforeId;
+        form.after_id = pagination.value.afterId;
       }
     }
 
@@ -212,7 +209,7 @@ const loadList = async () => {
 const initPagination = () => {
   dataList.value = [];
   pagination.value = {
-    order: 'desc', // 排序字段
+    order: 'asc', // 排序字段
     chatId: '', // 会话id
     beforeId: 0, // 上一条消息id
     afterId: 0, // 下一条消息id
