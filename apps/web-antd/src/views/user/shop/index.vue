@@ -14,8 +14,6 @@ import { getShopListApi, getStoreListApi } from '#/api';
 import FormShop from './form-shop.vue';
 
 interface RowType {
-  id: string;
-  storeDeptId: string;
   storeDeptName: string;
   name: string;
   status: string;
@@ -31,16 +29,18 @@ const getStoreList = async (value: string) => {
     pageSize: 9999,
     name: value,
   });
-  // 假设接口支持关键词参数
   storeOptions.value = options.records.map((item: any) => ({
     label: item.name,
     value: item.id,
   }));
 };
+
 const handleSearch = async (value: string) => {
   await getStoreList(value);
 };
+
 getStoreList('');
+
 const formOptions: VbenFormProps = {
   // 默认展开
   collapsed: false,
@@ -48,20 +48,24 @@ const formOptions: VbenFormProps = {
     {
       component: 'Select',
       fieldName: 'storeDeptId',
-      label: '连锁名称',
+      label: '连锁',
       defaultValue: '',
       componentProps: () => ({
         showSearch: true,
         filterOption: false,
         options: storeOptions.value,
         onSearch: handleSearch,
-        placeholder: '请输入搜索',
+        placeholder: '请输入连锁',
       }),
     },
     {
       component: 'Input',
       fieldName: 'name',
-      label: '门店名称',
+      label: '门店',
+      componentProps: {
+        placeholder: '请输入门店',
+        allowClear: true,
+      },
     },
     {
       component: 'Select',
@@ -85,10 +89,8 @@ const formOptions: VbenFormProps = {
 
 const gridOptions: VxeTableGridOptions<RowType> = {
   columns: [
-    { field: 'id', title: '门店ID' },
-    { field: 'storeDeptId', title: '连锁ID' },
-    { field: 'storeDeptName', title: '连锁名称' },
-    { field: 'name', title: '门店名称' },
+    { field: 'storeDeptName', title: '连锁' },
+    { field: 'name', title: '门店' },
     { field: 'statusDisplay', title: '状态' },
     {
       field: 'action',

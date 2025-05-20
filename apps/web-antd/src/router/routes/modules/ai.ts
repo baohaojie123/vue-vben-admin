@@ -32,7 +32,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         meta: {
-          title: $t('page.ai.az4ConversationList'),
+          title: $t('page.ai.conversationList'),
           hideInMenu: true,
         },
         name: 'Az4ConversationList',
