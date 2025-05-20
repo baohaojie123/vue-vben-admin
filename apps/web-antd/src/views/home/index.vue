@@ -21,19 +21,22 @@ import { useUserStore } from '@vben/stores';
 import { Button, Tabs } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getEmployeeListApi, getOverviewApi, getStoreListApi } from '#/api';
+import {
+  getEmployeeListApi,
+  getOverviewApi,
+  getShopListApi,
+  getStoreListApi,
+} from '#/api';
 
 interface RowType {
-  id: string;
-  storeDeptId: string;
-  storeDeptName: string;
-  shopDeptId: string;
-  shopDeptName: string;
   realName: string;
   username: string;
   userNo: string;
-  status: string;
-  statusDisplay: string;
+  region: string;
+  storeDeptName: string;
+  shopDeptName: string;
+  conversationLastTime: string;
+  conversationCount: number;
 }
 const storeOptions = ref<{ label: string; value: string }[]>([]);
 
@@ -64,11 +67,57 @@ const handleTabChange = (key: TabsProps['activeKey']) => {
   activeTab.value = key;
   gridApi.reload();
 };
+const shopOptions = ref<{ label: string; value: string }[]>([]);
+const getShopList = async (value: string) => {
+  const options = await getShopListApi({
+    pageAsc: false,
+    pageCurrent: 1,
+    pageSearchCount: true,
+    pageSize: 9999,
+    name: value,
+  });
+  shopOptions.value = options.records.map((item: any) => ({
+    label: item.name,
+    value: item.id,
+  }));
+};
 
+const handleSearchShop = async (value: string) => {
+  await getShopList(value);
+};
+
+getShopList('');
 const formOptions: VbenFormProps = {
   // 默认展开
   collapsed: false,
   schema: [
+    {
+      component: 'Input',
+      fieldName: 'realName',
+      label: '姓名',
+      componentProps: {
+        placeholder: '请输入姓名',
+        allowClear: true,
+      },
+    },
+    {
+      component: 'Input',
+      fieldName: 'username',
+      label: '账号',
+      componentProps: {
+        placeholder: '请输入账号',
+        allowClear: true,
+      },
+    },
+    {
+      component: 'Input',
+      fieldName: 'userNo',
+      label: '工号',
+      componentProps: {
+        placeholder: '请输入工号',
+        allowClear: true,
+      },
+    },
     {
       component: 'Input',
       fieldName: 'region',
@@ -93,22 +142,18 @@ const formOptions: VbenFormProps = {
       }),
     },
     {
-      component: 'Input',
-      fieldName: 'realName',
-      label: '药师姓名',
-      componentProps: {
-        placeholder: '请输入姓名',
+      component: 'Select',
+      fieldName: 'shopDeptId',
+      label: '门店',
+      defaultValue: '',
+      componentProps: () => ({
         allowClear: true,
-      },
-    },
-    {
-      component: 'Input',
-      fieldName: 'username',
-      label: '药师手机号',
-      componentProps: {
-        placeholder: '请输入手机号',
-        allowClear: true,
-      },
+        showSearch: true,
+        filterOption: false,
+        options: shopOptions.value,
+        onSearch: handleSearchShop,
+        placeholder: '请输入搜索',
+      }),
     },
   ],
   // 控制表单是否显示折叠按钮
@@ -122,9 +167,11 @@ const formOptions: VbenFormProps = {
 const gridOptions: VxeTableGridOptions<RowType> = {
   columns: [
     { field: 'realName', title: '姓名' },
-    { field: 'username', title: '手机号' },
-    { field: 'storeDeptName', title: '连锁' },
+    { field: 'username', title: '账号' },
+    { field: 'userNo', title: '工号' },
     { field: 'region', title: '大区' },
+    { field: 'storeDeptName', title: '连锁' },
+    { field: 'shopDeptName', title: '门店' },
     {
       field: 'conversationLastTime',
       title: '最近一次练习时间',
@@ -190,8 +237,8 @@ function handleEdit(row: RowType) {
 
 const overviewItems = ref<AnalysisOverviewItem[]>([]);
 
-const getOverview = async (params?: { enterpriseDeptId?: string }) => {
-  const res = await getOverviewApi(params || {});
+const getOverview = async (enterpriseDeptId?: string) => {
+  const res = await getOverviewApi(enterpriseDeptId);
   if (res) {
     overviewItems.value = [
       {
@@ -220,9 +267,7 @@ const getOverview = async (params?: { enterpriseDeptId?: string }) => {
 
 const userStore = useUserStore();
 
-getOverview({
-  enterpriseDeptId: userStore.userInfo?.enterpriseDeptId,
-});
+getOverview(userStore.userInfo?.enterpriseDeptId);
 </script>
 
 <template>

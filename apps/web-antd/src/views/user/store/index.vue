@@ -12,7 +12,6 @@ import { getStoreListApi } from '#/api';
 import FormStore from './form-store.vue';
 
 interface RowType {
-  id: string;
   region: string;
   name: string;
   status: string;
@@ -26,12 +25,20 @@ const formOptions: VbenFormProps = {
     {
       component: 'Input',
       fieldName: 'region',
-      label: '连锁区域',
+      label: '大区',
+      componentProps: {
+        placeholder: '请输入大区',
+        allowClear: true,
+      },
     },
     {
       component: 'Input',
       fieldName: 'name',
-      label: '连锁名称',
+      label: '连锁',
+      componentProps: {
+        placeholder: '请输入连锁',
+        allowClear: true,
+      },
     },
     {
       component: 'Select',
@@ -55,9 +62,8 @@ const formOptions: VbenFormProps = {
 
 const gridOptions: VxeTableGridOptions<RowType> = {
   columns: [
-    { field: 'id', title: '连锁ID' },
-    { field: 'region', title: '连锁区域' },
-    { field: 'name', title: '连锁名称' },
+    { field: 'region', title: '大区' },
+    { field: 'name', title: '连锁' },
     { field: 'statusDisplay', title: '状态' },
     {
       field: 'action',

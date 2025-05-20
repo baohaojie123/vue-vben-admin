@@ -14,10 +14,7 @@ import { getEmployeeListApi, getShopListApi, getStoreListApi } from '#/api';
 import FormEmployee from './form-employee.vue';
 
 interface RowType {
-  id: string;
-  storeDeptId: string;
   storeDeptName: string;
-  shopDeptId: string;
   shopDeptName: string;
   realName: string;
   username: string;
@@ -70,7 +67,7 @@ const formOptions: VbenFormProps = {
     {
       component: 'Select',
       fieldName: 'storeDeptId',
-      label: '连锁名称',
+      label: '连锁',
       defaultValue: '',
       componentProps: () => ({
         allowClear: true,
@@ -84,7 +81,7 @@ const formOptions: VbenFormProps = {
     {
       component: 'Select',
       fieldName: 'shopDeptId',
-      label: '门店名称',
+      label: '门店',
       defaultValue: '',
       componentProps: () => ({
         allowClear: true,
@@ -108,7 +105,7 @@ const formOptions: VbenFormProps = {
     {
       component: 'Input',
       fieldName: 'userNo',
-      label: '员工工号',
+      label: '工号',
     },
     {
       component: 'Select',
@@ -132,14 +129,11 @@ const formOptions: VbenFormProps = {
 
 const gridOptions: VxeTableGridOptions<RowType> = {
   columns: [
-    { field: 'id', title: '门店ID' },
-    { field: 'storeDeptId', title: '连锁ID' },
-    { field: 'storeDeptName', title: '连锁名称' },
-    { field: 'shopDeptId', title: '门店ID' },
-    { field: 'shopDeptName', title: '门店名称' },
+    { field: 'storeDeptName', title: '连锁' },
+    { field: 'shopDeptName', title: '门店' },
     { field: 'realName', title: '姓名' },
     { field: 'username', title: '账号' },
-    { field: 'userNo', title: '员工工号' },
+    { field: 'userNo', title: '工号' },
     { field: 'statusDisplay', title: '状态' },
     {
       field: 'action',
