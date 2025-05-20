@@ -13,8 +13,8 @@ import { IconifyIcon } from '@vben/icons';
 import { Spin } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { getMenuList } from '#/api/system/menu';
-import { createRole, updateRole } from '#/api/system/role';
+import { getMenuList, getMenuListByRoleId } from '#/api/system/menu';
+import { editRole } from '#/api/system/role';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
@@ -37,8 +37,15 @@ const [Drawer, drawerApi] = useVbenDrawer({
     const { valid } = await formApi.validate();
     if (!valid) return;
     const values = await formApi.getValues();
+    const roleData: SystemRoleApi.SystemRole = {
+      deptId: '0',
+      roleId: id.value,
+      name: values.name,
+      menuIdList: values.permissions || [],
+      description: values.description,
+    };
     drawerApi.lock();
-    (id.value ? updateRole(id.value, values) : createRole(values))
+    editRole(roleData)
       .then(() => {
         emits('success');
         drawerApi.close();
@@ -47,13 +54,15 @@ const [Drawer, drawerApi] = useVbenDrawer({
         drawerApi.unlock();
       });
   },
-  onOpenChange(isOpen) {
+  async onOpenChange(isOpen) {
     if (isOpen) {
       const data = drawerApi.getData<SystemRoleApi.SystemRole>();
       formApi.resetForm();
       if (data) {
         formData.value = data;
         id.value = data.id;
+        const res = await getMenuListByRoleId(data.id);
+        formData.value.permissions = collectMenuIds(res);
         formApi.setValues(data);
       } else {
         id.value = undefined;
@@ -92,6 +101,17 @@ function getNodeClass(node: Recordable<any>) {
   }
 
   return classes.join(' ');
+}
+
+function collectMenuIds(menuList: any[]): string[] {
+  const ids: string[] = [];
+  menuList.forEach((item) => {
+    ids.push(item.id);
+    if (item.children && item.children.length > 0) {
+      ids.push(...collectMenuIds(item.children));
+    }
+  });
+  return ids;
 }
 </script>
 <template>
