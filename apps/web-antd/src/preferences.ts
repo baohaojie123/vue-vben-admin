@@ -22,7 +22,7 @@ export const overridesPreferences = defineOverridesPreferences({
     mode: 'light',
   },
   logo: {
-    source: `/images/logo/icon_only.ico`,
+    source: `${import.meta.env.VITE_BASE}images/logo/icon_only.ico`,
   },
   widget: {
     notification: false,
