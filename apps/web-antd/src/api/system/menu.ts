@@ -147,7 +147,7 @@ async function deleteMenu(id: string) {
 
 /**
  * 根据角色ID列表获取菜单
- * @param roleIds 角色ID列表
+ * @param roleId 角色ID列表
  */
 async function getMenuListByRoleId(roleId: string) {
   return requestClient.get<Array<SystemMenuApi.SystemMenu>>(
