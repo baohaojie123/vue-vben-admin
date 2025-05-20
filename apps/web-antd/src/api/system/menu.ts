@@ -145,10 +145,21 @@ async function deleteMenu(id: string) {
   return requestClient.delete(`/system/menus/menu?menuId=${id}`);
 }
 
+/**
+ * 根据角色ID列表获取菜单
+ * @param roleIds 角色ID列表
+ */
+async function getMenuListByRoleId(roleId: string) {
+  return requestClient.get<Array<SystemMenuApi.SystemMenu>>(
+    `/system/menus/role?roleId=${roleId}`,
+  );
+}
+
 export {
   createMenu,
   deleteMenu,
   getMenuList,
+  getMenuListByRoleId,
   isMenuNameExists,
   isMenuPathExists,
   updateMenu,

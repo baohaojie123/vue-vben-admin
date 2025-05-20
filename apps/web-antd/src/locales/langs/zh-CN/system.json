@@ -56,10 +56,11 @@
     "list": "角色列表",
     "name": "角色",
     "roleName": "角色名称",
+    "deptId": "部门ID",
     "id": "角色ID",
-    "status": "状态",
-    "remark": "备注",
+    "description": "角色描述",
     "createTime": "创建时间",
+    "updateTime": "更新时间",
     "operation": "操作",
     "permissions": "权限",
     "setPermissions": "授权"

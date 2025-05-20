@@ -13,23 +13,9 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
     },
     {
-      component: 'RadioGroup',
-      componentProps: {
-        buttonStyle: 'solid',
-        options: [
-          { label: $t('common.enabled'), value: 1 },
-          { label: $t('common.disabled'), value: 0 },
-        ],
-        optionType: 'button',
-      },
-      defaultValue: 1,
-      fieldName: 'status',
-      label: $t('system.role.status'),
-    },
-    {
       component: 'Textarea',
-      fieldName: 'remark',
-      label: $t('system.role.remark'),
+      fieldName: 'description',
+      label: $t('system.role.description'),
     },
     {
       component: 'Input',
@@ -45,38 +31,25 @@ export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
       component: 'Input',
+      componentProps: {
+        allowClear: true,
+      },
       fieldName: 'name',
       label: $t('system.role.roleName'),
     },
-    { component: 'Input', fieldName: 'id', label: $t('system.role.id') },
-    {
-      component: 'Select',
-      componentProps: {
-        allowClear: true,
-        options: [
-          { label: $t('common.enabled'), value: 1 },
-          { label: $t('common.disabled'), value: 0 },
-        ],
-      },
-      fieldName: 'status',
-      label: $t('system.role.status'),
-    },
     {
       component: 'Input',
-      fieldName: 'remark',
-      label: $t('system.role.remark'),
-    },
-    {
-      component: 'RangePicker',
-      fieldName: 'createTime',
-      label: $t('system.role.createTime'),
+      componentProps: {
+        allowClear: true,
+      },
+      fieldName: 'description',
+      label: $t('system.role.description'),
     },
   ];
 }
 
 export function useColumns<T = SystemRoleApi.SystemRole>(
   onActionClick: OnActionClickFn<T>,
-  onStatusChange?: (newStatus: any, row: T) => PromiseLike<boolean | undefined>,
 ): VxeTableGridOptions['columns'] {
   return [
     {
@@ -85,27 +58,18 @@ export function useColumns<T = SystemRoleApi.SystemRole>(
       width: 200,
     },
     {
-      field: 'id',
-      title: $t('system.role.id'),
-      width: 200,
-    },
-    {
-      cellRender: {
-        attrs: { beforeChange: onStatusChange },
-        name: onStatusChange ? 'CellSwitch' : 'CellTag',
-      },
-      field: 'status',
-      title: $t('system.role.status'),
-      width: 100,
-    },
-    {
-      field: 'remark',
+      field: 'description',
       minWidth: 100,
-      title: $t('system.role.remark'),
+      title: $t('system.role.description'),
     },
     {
       field: 'createTime',
       title: $t('system.role.createTime'),
+      width: 200,
+    },
+    {
+      field: 'updateTime',
+      title: $t('system.role.updateTime'),
       width: 200,
     },
     {
@@ -116,6 +80,7 @@ export function useColumns<T = SystemRoleApi.SystemRole>(
           nameTitle: $t('system.role.name'),
           onClick: onActionClick,
         },
+        options: ['edit'],
         name: 'CellOperation',
       },
       field: 'operation',
