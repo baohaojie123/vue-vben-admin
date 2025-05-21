@@ -2,10 +2,12 @@
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
+import { useQRCode } from '@vueuse/integrations/useQRCode';
 import { Button } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -19,9 +21,18 @@ interface RowType {
   id: string;
   name: string;
   description: string;
+  h5Url: string;
   cozeBotIdList: string[];
   clBotSetting: Record<string, any>;
 }
+
+// 体验二维码
+const targetUrl = ref('');
+
+const qrcode = useQRCode(targetUrl, {
+  errorCorrectionLevel: 'H',
+  margin: 4,
+});
 
 const formOptions: VbenFormProps = {
   // 默认展开
@@ -101,6 +112,23 @@ const [FormModel, formModalApi] = useVbenModal({
     }
   },
 });
+const [QrcodeModal, QrcodeModalApi] = useVbenModal({
+  title: '智能体体验',
+  confirmText: '关闭',
+  showCancelButton: false,
+  class: 'w-[600px]',
+  onBeforeClose: () => {
+    return new Promise((resolve) => {
+      targetUrl.value = '';
+      qrcode.value = '';
+      resolve(true);
+    });
+  },
+  onConfirm: () => {
+    QrcodeModalApi.close();
+  },
+});
+
 function openFormModal() {
   formModalApi.setData(null).open();
 }
@@ -115,17 +143,51 @@ function handleViewConversationList(id: string) {
 function handleEdit(row: RowType) {
   formModalApi.setData(row).open();
 }
+
+// 体验事件
+async function handleExperience(row: RowType) {
+  // 使用useQRCode生成二维码
+  targetUrl.value = row.h5Url;
+  // 等待一小段时间确保二维码生成完成
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  QrcodeModalApi.open();
+}
+// 处理targetUrl判断的逻辑
+function isUrlValid() {
+  const url = targetUrl.value;
+  const isEmpty = !url;
+
+  return {
+    isEmpty,
+    iconType: isEmpty ? 'warning' : 'success',
+    tipText: isEmpty
+      ? 'H5链接为空，请先设置H5链接'
+      : '请使用手机扫描下方二维码',
+    showQRCode: !isEmpty,
+  };
+}
 </script>
 
 <template>
   <Page auto-content-height>
     <FormModel />
+    <QrcodeModal>
+      <div>
+        <p class="text-center">{{ isUrlValid().tipText }}</p>
+        <img
+          v-if="isUrlValid().showQRCode"
+          :src="qrcode"
+          alt="qrcode"
+          class="mx-auto block w-[200px]"
+        />
+      </div>
+    </QrcodeModal>
     <Grid>
       <template #toolbar-actions>
         <Button type="primary" @click="openFormModal"> 新增智能体 </Button>
       </template>
       <template #action="{ row }">
-        <Button type="primary">体验</Button>
+        <Button type="primary" @click="handleExperience(row)">体验</Button>
         <Button
           type="primary"
           @click="handleViewConversationList(row.id)"

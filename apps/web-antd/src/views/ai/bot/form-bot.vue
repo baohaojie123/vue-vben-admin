@@ -69,6 +69,14 @@ const [Form, formApi] = useVbenForm({
       rules: 'required',
     },
     {
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入',
+      },
+      fieldName: 'h5Url',
+      label: 'H5链接',
+    },
+    {
       component: h(Vue3JsonEditor),
       componentProps: {
         modelValue: initialJsonValue,
@@ -111,6 +119,7 @@ const [Modal, modalApi] = useVbenModal({
           cozeBotIdList: Array.isArray(data.cozeBotIdList)
             ? data.cozeBotIdList.join(',')
             : '',
+          h5Url: data.h5Url,
           clBotSetting: data.clBotSetting || {},
         });
       }
