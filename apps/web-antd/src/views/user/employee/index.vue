@@ -39,13 +39,14 @@ const getStoreList = async (value: string) => {
   }));
 };
 const shopOptions = ref<{ label: string; value: string }[]>([]);
-const getShopList = async (value: string) => {
+const getShopList = async (value: string, storeDeptId: string) => {
   const options = await getShopListApi({
     pageAsc: false,
     pageCurrent: 1,
     pageSearchCount: true,
     pageSize: 9999,
     name: value,
+    storeDeptId,
   });
   shopOptions.value = options.records.map((item: any) => ({
     label: item.name,
@@ -55,11 +56,11 @@ const getShopList = async (value: string) => {
 const handleSearchStore = async (value: string) => {
   await getStoreList(value);
 };
-const handleSearchShop = async (value: string) => {
-  await getShopList(value);
+const handleSearchShop = async (value: string, storeDeptId: string) => {
+  await getShopList(value, storeDeptId);
 };
 getStoreList('');
-getShopList('');
+
 const formOptions: VbenFormProps = {
   // 默认展开
   collapsed: false,
@@ -83,14 +84,23 @@ const formOptions: VbenFormProps = {
       fieldName: 'shopDeptId',
       label: '门店',
       defaultValue: '',
-      componentProps: () => ({
+      componentProps: (values) => ({
         allowClear: true,
         showSearch: true,
         filterOption: false,
         options: shopOptions.value,
-        onSearch: handleSearchShop,
+        onSearch: (value: string) =>
+          handleSearchShop(value, values.storeDeptId),
         placeholder: '请输入搜索',
+        disabled: !values.storeDeptId,
       }),
+      dependencies: {
+        trigger(values) {
+          handleSearchShop('', values.storeDeptId);
+          values.shopDeptId = '';
+        },
+        triggerFields: ['storeDeptId'],
+      },
     },
     {
       component: 'Input',

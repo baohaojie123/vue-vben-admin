@@ -11,15 +11,16 @@ import { getShopListApi, getStoreListApi, mergeEmployeeApi } from '#/api';
 defineOptions({
   name: 'FormEmployee',
 });
-const storeOptions = ref([]);
-const shopOptions = ref([]);
-const getShopList = async (value: string) => {
+const storeOptions = ref<{ label: string; value: string }[]>([]);
+const shopOptions = ref<{ label: string; value: string }[]>([]);
+const getShopList = async (value: string, storeDeptId: string) => {
   const options = await getShopListApi({
     pageAsc: false,
     pageCurrent: 1,
     pageSearchCount: true,
     pageSize: 9999,
     name: value,
+    storeDeptId,
   });
   shopOptions.value = options.records.map((item: any) => ({
     label: item.name,
@@ -43,11 +44,11 @@ const getStoreList = async (value: string) => {
 const handleSearchStore = async (value: string) => {
   await getStoreList(value);
 };
-const handleSearchShop = async (value: string) => {
-  await getShopList(value);
+const handleSearchShop = async (value: string, storeDeptId: string) => {
+  await getShopList(value, storeDeptId);
 };
 getStoreList('');
-getShopList('');
+
 const [Form, formApi] = useVbenForm({
   handleSubmit: onSubmit,
   commonConfig: {
@@ -62,6 +63,13 @@ const [Form, formApi] = useVbenForm({
       fieldName: 'id',
     },
     {
+      component: 'Input',
+      componentProps: {
+        type: 'hidden',
+      },
+      fieldName: 'oldStoreDeptId',
+    },
+    {
       component: 'Select',
       fieldName: 'storeDeptId',
       label: '连锁名称',
@@ -71,7 +79,7 @@ const [Form, formApi] = useVbenForm({
         return {
           showSearch: true,
           filterOption: false,
-          options: storeOptions,
+          options: storeOptions.value,
           onSearch: handleSearchStore,
           placeholder: '请输入搜索',
           style: {
@@ -86,18 +94,26 @@ const [Form, formApi] = useVbenForm({
       label: '门店名称',
       rules: 'required',
       defaultValue: '',
-      componentProps: () => {
+      componentProps: (values) => {
         return {
           allowClear: true,
-          showSearch: true,
           filterOption: false,
-          options: shopOptions,
-          onSearch: handleSearchShop,
+          options: shopOptions.value,
           placeholder: '请输入搜索',
           style: {
             width: '100%',
           },
+          disabled: !values.storeDeptId,
         };
+      },
+      dependencies: {
+        trigger(values) {
+          handleSearchShop('', values.storeDeptId);
+          if (values.oldStoreDeptId !== values.storeDeptId) {
+            values.shopDeptId = '';
+          }
+        },
+        triggerFields: ['storeDeptId'],
       },
     },
     {
@@ -155,6 +171,7 @@ const [Modal, modalApi] = useVbenModal({
           userNo: data.userNo,
           status: data.status,
           storeDeptId: data.storeDeptId,
+          oldStoreDeptId: data.storeDeptId,
           shopDeptId: data.shopDeptId,
         });
       }
