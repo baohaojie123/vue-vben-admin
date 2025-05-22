@@ -72,7 +72,7 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Select',
       fieldName: 'storeDeptId',
-      label: '连锁名称',
+      label: '连锁',
       defaultValue: '',
       rules: 'required',
       componentProps: () => {
@@ -91,7 +91,7 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Select',
       fieldName: 'shopDeptId',
-      label: '门店名称',
+      label: '门店',
       rules: 'required',
       defaultValue: '',
       componentProps: (values) => {
