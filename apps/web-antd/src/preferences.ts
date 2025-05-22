@@ -17,6 +17,7 @@ export const overridesPreferences = defineOverridesPreferences({
     accessMode: 'backend',
     // 登录超时会跳转到登录页
     loginExpiredMode: 'page',
+    authPageLayout: 'panel-center',
   },
   theme: {
     mode: 'light',
@@ -27,5 +28,8 @@ export const overridesPreferences = defineOverridesPreferences({
   widget: {
     notification: false,
     languageToggle: false,
+  },
+  copyright: {
+    enable: false,
   },
 });
