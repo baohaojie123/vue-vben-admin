@@ -46,12 +46,8 @@
     "ant-design-vue": "catalog:",
     "dayjs": "catalog:",
     "pinia": "catalog:",
-    "qrcode": "catalog:",
     "vue": "catalog:",
     "vue-router": "catalog:",
     "vue3-json-editor": "catalog:"
-  },
-  "devDependencies": {
-    "@types/qrcode": "catalog:"
   }
 }

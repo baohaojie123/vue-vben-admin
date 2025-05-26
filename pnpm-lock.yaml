@@ -722,9 +722,6 @@ importers:
       pinia:
         specifier: ^3.0.2
         version: 3.0.2(typescript@5.8.3)(vue@3.5.13(typescript@5.8.3))
-      qrcode:
-        specifier: 'catalog:'
-        version: 1.5.4
       vue:
         specifier: ^3.5.13
         version: 3.5.13(typescript@5.8.3)
@@ -734,10 +731,6 @@ importers:
       vue3-json-editor:
         specifier: 'catalog:'
         version: 1.1.5(typescript@5.8.3)
-    devDependencies:
-      '@types/qrcode':
-        specifier: 'catalog:'
-        version: 1.5.5
 
   apps/web-ele:
     dependencies:
