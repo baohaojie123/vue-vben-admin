@@ -145,3 +145,8 @@ function onSubmit(values: Record<string, any>) {
     <Form />
   </Modal>
 </template>
+<style lang="scss">
+.jsoneditor-vue .jsoneditor-outer {
+  height: 800px;
+}
+</style>
