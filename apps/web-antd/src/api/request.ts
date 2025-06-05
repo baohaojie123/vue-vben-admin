@@ -16,6 +16,7 @@ import { useAccessStore } from '@vben/stores';
 import { message } from 'ant-design-vue';
 
 import { useAuthStore } from '#/store';
+import { useChainSelectStore } from '#/store/chain-select';
 
 import { refreshTokenApi } from './core';
 
@@ -62,13 +63,42 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
       : `Basic aG9zcGl0YWwtZXllOmhvc3BpdGFsLWV5ZQ==`;
   }
 
+  /**
+   * 处理连锁选择参数
+   * @param params 原始参数
+   * @returns 合并后的参数
+   */
+  function handleChainSelectParams(params: Record<string, any> = {}) {
+    const chainSelectStore = useChainSelectStore();
+    return {
+      ...(chainSelectStore.groupDeptId && {
+        groupDeptId: chainSelectStore.groupDeptId,
+      }),
+      ...(chainSelectStore.chainDeptId && {
+        chainDeptId: chainSelectStore.chainDeptId,
+      }),
+      ...(chainSelectStore.shopDeptId && {
+        shopDeptId: chainSelectStore.shopDeptId,
+      }),
+      ...params,
+    };
+  }
+
   // 请求头处理
   client.addRequestInterceptor({
     fulfilled: async (config) => {
       const accessStore = useAccessStore();
+
       config.headers.satoken = formatToken(accessStore.accessToken);
-      // config.headers.Authorization = formatToken(accessStore.accessToken);
       config.headers['Accept-Language'] = preferences.app.locale;
+
+      // 添加连锁选择参数到请求参数中
+      if (config.method?.toLowerCase() === 'get') {
+        config.params = handleChainSelectParams(config.params);
+      } else {
+        config.data = handleChainSelectParams(config.data);
+      }
+
       return config;
     },
   });

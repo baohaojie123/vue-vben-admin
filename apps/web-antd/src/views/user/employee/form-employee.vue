@@ -38,7 +38,7 @@ const getChainList = async (value: string, groupDeptId: string) => {
     pageCurrent: 1,
     pageSearchCount: true,
     pageSize: 9999,
-    name: value,
+    ...(value && { name: value }),
     groupDeptId,
   });
   // 假设接口支持关键词参数

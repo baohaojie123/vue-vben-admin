@@ -40,7 +40,10 @@ const slots = useSlots();
 const { refresh } = useRefresh();
 
 const rightSlots = computed(() => {
-  const list = [{ index: REFERENCE_VALUE + 100, name: 'user-dropdown' }];
+  const list = [
+    { index: REFERENCE_VALUE + 100, name: 'user-dropdown' },
+    { index: REFERENCE_VALUE, name: 'chain-select' },
+  ];
   if (preferences.widget.globalSearch) {
     list.push({
       index: REFERENCE_VALUE,

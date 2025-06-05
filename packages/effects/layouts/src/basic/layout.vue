@@ -275,6 +275,9 @@ const headerSlots = computed(() => {
             @select="handleMenuSelect"
           />
         </template>
+        <template #chain-select>
+          <slot name="chain-select"></slot>
+        </template>
         <template #user-dropdown>
           <slot name="user-dropdown"></slot>
         </template>

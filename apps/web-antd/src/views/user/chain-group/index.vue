@@ -20,6 +20,9 @@ interface RowType {
 const formOptions: VbenFormProps = {
   // 默认展开
   collapsed: false,
+  commonConfig: {
+    labelWidth: 130,
+  },
   schema: [
     {
       component: 'Input',
