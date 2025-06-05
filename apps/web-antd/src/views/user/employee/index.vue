@@ -9,12 +9,17 @@ import { Page, useVbenModal } from '@vben/common-ui';
 import { Button } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getEmployeeListApi, getShopListApi, getStoreListApi } from '#/api';
+import {
+  getChainGroupListApi,
+  getChainListApi,
+  getEmployeeListApi,
+  getShopListApi,
+} from '#/api';
 
 import FormEmployee from './form-employee.vue';
 
 interface RowType {
-  storeDeptName: string;
+  chainDeptName: string;
   shopDeptName: string;
   realName: string;
   username: string;
@@ -22,62 +27,104 @@ interface RowType {
   status: string;
   statusDisplay: string;
 }
-const storeOptions = ref<{ label: string; value: string }[]>([]);
+const chainOptions = ref<{ label: string; value: string }[]>([]);
 
-const getStoreList = async (value: string) => {
-  const options = await getStoreListApi({
+const getChainList = async (value: string, groupDeptId: string) => {
+  const options = await getChainListApi({
     pageAsc: false,
     pageCurrent: 1,
     pageSearchCount: true,
     pageSize: 9999,
     name: value,
+    groupDeptId,
   });
   // 假设接口支持关键词参数
-  storeOptions.value = options.records.map((item: any) => ({
+  chainOptions.value = options.records.map((item: any) => ({
     label: item.name,
     value: item.id,
   }));
 };
 const shopOptions = ref<{ label: string; value: string }[]>([]);
-const getShopList = async (value: string, storeDeptId: string) => {
+const getShopList = async (value: string, chainDeptId: string) => {
   const options = await getShopListApi({
     pageAsc: false,
     pageCurrent: 1,
     pageSearchCount: true,
     pageSize: 9999,
     name: value,
-    storeDeptId,
+    chainDeptId,
   });
   shopOptions.value = options.records.map((item: any) => ({
     label: item.name,
     value: item.id,
   }));
 };
-const handleSearchStore = async (value: string) => {
-  await getStoreList(value);
+const handleChainSearch = async (value: string, groupDeptId: string) => {
+  await getChainList(value, groupDeptId);
 };
-const handleSearchShop = async (value: string, storeDeptId: string) => {
-  await getShopList(value, storeDeptId);
+const handleShopSearch = async (value: string, chainDeptId: string) => {
+  await getShopList(value, chainDeptId);
 };
-getStoreList('');
 
+const chainGroupOptions = ref<{ label: string; value: string }[]>([]);
+
+const getChainGroupList = async (value: string) => {
+  const options = await getChainGroupListApi({
+    pageAsc: false,
+    pageCurrent: 1,
+    pageSearchCount: true,
+    pageSize: 9999,
+    name: value,
+  });
+  chainGroupOptions.value = options.records.map((item: any) => ({
+    label: item.name,
+    value: item.id,
+  }));
+};
+const handleChainGroupSearch = async (value: string) => {
+  await getChainGroupList(value);
+};
+getChainGroupList('');
 const formOptions: VbenFormProps = {
   // 默认展开
   collapsed: false,
   schema: [
     {
       component: 'Select',
-      fieldName: 'storeDeptId',
-      label: '连锁',
+      fieldName: 'groupDeptId',
+      label: '连锁集团公司',
       defaultValue: '',
       componentProps: () => ({
         allowClear: true,
         showSearch: true,
         filterOption: false,
-        options: storeOptions.value,
-        onSearch: handleSearchStore,
-        placeholder: '请输入搜索',
+        options: chainGroupOptions.value,
+        onSearch: handleChainGroupSearch,
+        placeholder: '请输入连锁集团公司',
       }),
+    },
+    {
+      component: 'Select',
+      fieldName: 'chainDeptId',
+      label: '连锁',
+      defaultValue: '',
+      componentProps: (values) => {
+        return {
+          allowClear: true,
+          showSearch: true,
+          filterOption: false,
+          options: chainOptions.value,
+          onSearch: handleChainSearch,
+          placeholder: '请输入搜索',
+          disabled: !values.groupDeptId,
+        };
+      },
+      dependencies: {
+        trigger(values) {
+          handleChainSearch('', values.groupDeptId);
+        },
+        triggerFields: ['groupDeptId'],
+      },
     },
     {
       component: 'Select',
@@ -90,16 +137,16 @@ const formOptions: VbenFormProps = {
         filterOption: false,
         options: shopOptions.value,
         onSearch: (value: string) =>
-          handleSearchShop(value, values.storeDeptId),
+          handleShopSearch(value, values.chainDeptId),
         placeholder: '请输入搜索',
-        disabled: !values.storeDeptId,
+        disabled: !values.chainDeptId,
       }),
       dependencies: {
         trigger(values) {
-          handleSearchShop('', values.storeDeptId);
+          handleShopSearch('', values.chainDeptId);
           values.shopDeptId = '';
         },
-        triggerFields: ['storeDeptId'],
+        triggerFields: ['chainDeptId'],
       },
     },
     {
@@ -139,7 +186,7 @@ const formOptions: VbenFormProps = {
 
 const gridOptions: VxeTableGridOptions<RowType> = {
   columns: [
-    { field: 'storeDeptName', title: '连锁' },
+    { field: 'chainDeptName', title: '连锁' },
     { field: 'shopDeptName', title: '门店' },
     { field: 'realName', title: '姓名' },
     { field: 'username', title: '账号' },

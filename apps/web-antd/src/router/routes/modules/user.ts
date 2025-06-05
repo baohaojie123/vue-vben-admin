@@ -15,11 +15,19 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         meta: {
-          title: $t('page.user.store'),
+          title: $t('page.user.chainGroup'),
         },
-        name: 'Store',
-        path: '/user/store',
-        component: () => import('#/views/user/store/index.vue'),
+        name: 'ChainGroup',
+        path: '/user/chainGroup',
+        component: () => import('#/views/user/chain-group/index.vue'),
+      },
+      {
+        meta: {
+          title: $t('page.user.chain'),
+        },
+        name: 'Chain',
+        path: '/user/chain',
+        component: () => import('#/views/user/chain/index.vue'),
       },
       {
         meta: {

@@ -2,14 +2,24 @@ import type { Recordable } from '@vben/types';
 
 import { requestClient } from '#/api/request';
 
+// 分页查询连锁集团公司列表
+async function getChainGroupListApi(params: Recordable<any>) {
+  return requestClient.post('/chain/groups/search', params);
+}
+
+// 新增或修改连锁集团公司
+async function mergeChainGroupApi(params: Recordable<any>) {
+  return requestClient.post('/chain/groups/group', params);
+}
+
 // 分页查询连锁列表
-async function getStoreListApi(params: Recordable<any>) {
-  return requestClient.post('/stores/search', params);
+async function getChainListApi(params: Recordable<any>) {
+  return requestClient.post('/chains/search', params);
 }
 
 // 新增或修改连锁
-async function mergeStoreApi(params: Recordable<any>) {
-  return requestClient.post('/stores/store', params);
+async function mergeChainApi(params: Recordable<any>) {
+  return requestClient.post('/chains/store', params);
 }
 
 // 分页查询门店列表
@@ -32,10 +42,12 @@ async function mergeEmployeeApi(params: Recordable<any>) {
 }
 
 export {
+  getChainGroupListApi,
+  getChainListApi,
   getEmployeeListApi,
   getShopListApi,
-  getStoreListApi,
+  mergeChainApi,
+  mergeChainGroupApi,
   mergeEmployeeApi,
   mergeShopApi,
-  mergeStoreApi,
 };

@@ -2,17 +2,38 @@
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { ref } from 'vue';
+
 import { Page, useVbenModal } from '@vben/common-ui';
 
 import { Button } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getStoreListApi } from '#/api';
+import { getChainGroupListApi, getChainListApi } from '#/api';
 
-import FormStore from './form-store.vue';
+import FormChain from './form-chain.vue';
 
+const chainGroupOptions = ref<{ label: string; value: string }[]>([]);
+
+const handleSearch = async (value: string) => {
+  await getChainGroupList(value);
+};
+const getChainGroupList = async (value: string) => {
+  const options = await getChainGroupListApi({
+    pageAsc: false,
+    pageCurrent: 1,
+    pageSearchCount: true,
+    pageSize: 9999,
+    name: value,
+  });
+  chainGroupOptions.value = options.records.map((item: any) => ({
+    label: item.name,
+    value: item.id,
+  }));
+};
+getChainGroupList('');
 interface RowType {
-  region: string;
+  groupDeptId: string;
   name: string;
   status: string;
   statusDisplay: string;
@@ -23,13 +44,18 @@ const formOptions: VbenFormProps = {
   collapsed: false,
   schema: [
     {
-      component: 'Input',
-      fieldName: 'region',
-      label: '大区',
-      componentProps: {
-        placeholder: '请输入大区',
+      component: 'Select',
+      fieldName: 'groupDeptId',
+      label: '连锁集团公司',
+      defaultValue: '',
+      componentProps: () => ({
         allowClear: true,
-      },
+        showSearch: true,
+        filterOption: false,
+        options: chainGroupOptions.value,
+        onSearch: handleSearch,
+        placeholder: '请输入连锁集团公司',
+      }),
     },
     {
       component: 'Input',
@@ -62,7 +88,7 @@ const formOptions: VbenFormProps = {
 
 const gridOptions: VxeTableGridOptions<RowType> = {
   columns: [
-    { field: 'region', title: '大区' },
+    { field: 'groupDeptId', title: '集团公司ID' },
     { field: 'name', title: '连锁' },
     { field: 'statusDisplay', title: '状态' },
     {
@@ -80,7 +106,7 @@ const gridOptions: VxeTableGridOptions<RowType> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        const res = await getStoreListApi({
+        const res = await getChainListApi({
           pageAsc: false,
           pageCurrent: page.currentPage,
           pageSearchCount: true,
@@ -111,7 +137,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions,
 });
 const [FormModel, formModalApi] = useVbenModal({
-  connectedComponent: FormStore,
+  connectedComponent: FormChain,
   onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       gridApi.reload();

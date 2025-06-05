@@ -25,7 +25,7 @@ import {
   getEmployeeListApi,
   getOverviewApi,
   getShopListApi,
-  getStoreListApi,
+  getChainListApi,
 } from '#/api';
 
 interface RowType {
@@ -41,7 +41,7 @@ interface RowType {
 const storeOptions = ref<{ label: string; value: string }[]>([]);
 
 const getStoreList = async (value: string) => {
-  const options = await getStoreListApi({
+  const options = await getChainListApi({
     pageAsc: false,
     pageCurrent: 1,
     pageSearchCount: true,

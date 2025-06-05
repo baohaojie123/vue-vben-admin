@@ -6,49 +6,72 @@ import { useVbenModal } from '@vben/common-ui';
 import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { getShopListApi, getStoreListApi, mergeEmployeeApi } from '#/api';
+import {
+  getChainGroupListApi,
+  getChainListApi,
+  getShopListApi,
+  mergeEmployeeApi,
+} from '#/api';
 
 defineOptions({
   name: 'FormEmployee',
 });
-const storeOptions = ref<{ label: string; value: string }[]>([]);
+const chainOptions = ref<{ label: string; value: string }[]>([]);
 const shopOptions = ref<{ label: string; value: string }[]>([]);
-const getShopList = async (value: string, storeDeptId: string) => {
+const getShopList = async (value: string, chainDeptId: string) => {
   const options = await getShopListApi({
     pageAsc: false,
     pageCurrent: 1,
     pageSearchCount: true,
     pageSize: 9999,
     name: value,
-    storeDeptId,
+    chainDeptId,
   });
   shopOptions.value = options.records.map((item: any) => ({
     label: item.name,
     value: item.id,
   }));
 };
-const getStoreList = async (value: string) => {
-  const options = await getStoreListApi({
+const getChainList = async (value: string, groupDeptId: string) => {
+  const options = await getChainListApi({
+    pageAsc: false,
+    pageCurrent: 1,
+    pageSearchCount: true,
+    pageSize: 9999,
+    name: value,
+    groupDeptId,
+  });
+  // 假设接口支持关键词参数
+  chainOptions.value = options.records.map((item: any) => ({
+    label: item.name,
+    value: item.id,
+  }));
+};
+const handleSearchChain = async (value: string, groupDeptId: string) => {
+  await getChainList(value, groupDeptId);
+};
+const handleSearchShop = async (value: string, chainDeptId: string) => {
+  await getShopList(value, chainDeptId);
+};
+
+const chainGroupOptions = ref<{ label: string; value: string }[]>([]);
+const getChainGroupList = async (value: string) => {
+  const options = await getChainGroupListApi({
     pageAsc: false,
     pageCurrent: 1,
     pageSearchCount: true,
     pageSize: 9999,
     name: value,
   });
-  // 假设接口支持关键词参数
-  storeOptions.value = options.records.map((item: any) => ({
+  chainGroupOptions.value = options.records.map((item: any) => ({
     label: item.name,
     value: item.id,
   }));
 };
-const handleSearchStore = async (value: string) => {
-  await getStoreList(value);
+const handleChainGroupSearch = async (value: string) => {
+  await getChainGroupList(value);
 };
-const handleSearchShop = async (value: string, storeDeptId: string) => {
-  await getShopList(value, storeDeptId);
-};
-getStoreList('');
-
+getChainGroupList('');
 const [Form, formApi] = useVbenForm({
   handleSubmit: onSubmit,
   commonConfig: {
@@ -67,25 +90,53 @@ const [Form, formApi] = useVbenForm({
       componentProps: {
         type: 'hidden',
       },
-      fieldName: 'oldStoreDeptId',
+      fieldName: 'oldGroupDeptId',
     },
     {
       component: 'Select',
-      fieldName: 'storeDeptId',
+      fieldName: 'groupDeptId',
+      label: '连锁集团公司',
+      rules: 'required',
+      defaultValue: '',
+      componentProps: () => ({
+        allowClear: true,
+        showSearch: true,
+        filterOption: false,
+        options: chainGroupOptions.value,
+        onSearch: handleChainGroupSearch,
+        style: {
+          width: '100%',
+        },
+        placeholder: '请输入连锁集团公司',
+      }),
+    },
+    {
+      component: 'Select',
+      fieldName: 'chainDeptId',
       label: '连锁',
       defaultValue: '',
       rules: 'required',
-      componentProps: () => {
+      componentProps: (values) => {
         return {
           showSearch: true,
           filterOption: false,
-          options: storeOptions.value,
-          onSearch: handleSearchStore,
+          options: chainOptions.value,
           placeholder: '请输入搜索',
           style: {
             width: '100%',
           },
+          disabled: !values.groupDeptId,
         };
+      },
+      dependencies: {
+        trigger(values) {
+          handleSearchChain('', values.groupDeptId);
+          if (values.oldGroupDeptId !== values.groupDeptId) {
+            values.chainDeptId = '';
+            values.shopDeptId = '';
+          }
+        },
+        triggerFields: ['groupDeptId'],
       },
     },
     {
@@ -103,17 +154,17 @@ const [Form, formApi] = useVbenForm({
           style: {
             width: '100%',
           },
-          disabled: !values.storeDeptId,
+          disabled: !values.chainDeptId,
         };
       },
       dependencies: {
         trigger(values) {
-          handleSearchShop('', values.storeDeptId);
-          if (values.oldStoreDeptId !== values.storeDeptId) {
+          handleSearchShop('', values.chainDeptId);
+          if (values.oldGroupDeptId !== values.groupDeptId) {
             values.shopDeptId = '';
           }
         },
-        triggerFields: ['storeDeptId'],
+        triggerFields: ['chainDeptId'],
       },
     },
     {
@@ -170,8 +221,9 @@ const [Modal, modalApi] = useVbenModal({
           username: data.username,
           userNo: data.userNo,
           status: data.status,
-          storeDeptId: data.storeDeptId,
-          oldStoreDeptId: data.storeDeptId,
+          groupDeptId: data.groupDeptId,
+          oldGroupDeptId: data.groupDeptId,
+          chainDeptId: data.chainDeptId,
           shopDeptId: data.shopDeptId,
         });
       }
