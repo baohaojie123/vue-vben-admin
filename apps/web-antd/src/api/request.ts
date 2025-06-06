@@ -71,17 +71,42 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   function handleChainSelectParams(params: Record<string, any> = {}) {
     const chainSelectStore = useChainSelectStore();
     return {
-      ...(chainSelectStore.groupDeptId && {
-        groupDeptId: chainSelectStore.groupDeptId,
-      }),
-      ...(chainSelectStore.chainDeptId && {
-        chainDeptId: chainSelectStore.chainDeptId,
-      }),
-      ...(chainSelectStore.shopDeptId && {
-        shopDeptId: chainSelectStore.shopDeptId,
-      }),
       ...params,
+      ...(params.groupDeptId
+        ? {
+            groupDeptId: params.groupDeptId,
+          }
+        : chainSelectStore.groupDeptId && {
+            groupDeptId: chainSelectStore.groupDeptId,
+          }),
+      ...(params.chainDeptId
+        ? {
+            chainDeptId: params.chainDeptId,
+          }
+        : chainSelectStore.chainDeptId && {
+            chainDeptId: chainSelectStore.chainDeptId,
+          }),
+      ...(params.shopDeptId
+        ? {
+            shopDeptId: params.shopDeptId,
+          }
+        : chainSelectStore.shopDeptId && {
+            shopDeptId: chainSelectStore.shopDeptId,
+          }),
     };
+  }
+
+  /**
+   * 移除对象中的空值（null、undefined、空字符串）
+   * @param obj 需要处理的对象
+   * @returns 处理后的对象
+   */
+  function removeEmptyValues(obj: Record<string, any> = {}) {
+    return Object.fromEntries(
+      Object.entries(obj).filter(
+        ([_, value]) => value !== null && value !== undefined && value !== '',
+      ),
+    );
   }
 
   // 请求头处理
@@ -94,9 +119,11 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
 
       // 添加连锁选择参数到请求参数中
       if (config.method?.toLowerCase() === 'get') {
-        config.params = handleChainSelectParams(config.params);
+        const params = handleChainSelectParams(config.params);
+        config.params = removeEmptyValues(params);
       } else {
-        config.data = handleChainSelectParams(config.data);
+        const data = handleChainSelectParams(config.data);
+        config.data = removeEmptyValues(data);
       }
 
       return config;
