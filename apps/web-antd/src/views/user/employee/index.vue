@@ -45,13 +45,18 @@ const getChainList = async (value: string, groupDeptId: string) => {
   }));
 };
 const shopOptions = ref<{ label: string; value: string }[]>([]);
-const getShopList = async (value: string, chainDeptId: string) => {
+const getShopList = async (
+  value: string,
+  groupDeptId: string,
+  chainDeptId: string,
+) => {
   const options = await getShopListApi({
     pageAsc: false,
     pageCurrent: 1,
     pageSearchCount: true,
     pageSize: 9999,
     name: value,
+    groupDeptId,
     chainDeptId,
   });
   shopOptions.value = options.records.map((item: any) => ({
@@ -62,8 +67,12 @@ const getShopList = async (value: string, chainDeptId: string) => {
 const handleChainSearch = async (value: string, groupDeptId: string) => {
   await getChainList(value, groupDeptId);
 };
-const handleShopSearch = async (value: string, chainDeptId: string) => {
-  await getShopList(value, chainDeptId);
+const handleShopSearch = async (
+  value: string,
+  groupDeptId: string,
+  chainDeptId: string,
+) => {
+  await getShopList(value, groupDeptId, chainDeptId);
 };
 
 const chainGroupOptions = ref<{ label: string; value: string }[]>([]);
@@ -137,13 +146,13 @@ const formOptions: VbenFormProps = {
         filterOption: false,
         options: shopOptions.value,
         onSearch: (value: string) =>
-          handleShopSearch(value, values.chainDeptId),
+          handleShopSearch(value, values.groupDeptId, values.chainDeptId),
         placeholder: '请输入搜索',
         disabled: !values.chainDeptId,
       }),
       dependencies: {
         trigger(values) {
-          handleShopSearch('', values.chainDeptId);
+          handleShopSearch('', values.groupDeptId, values.chainDeptId);
           values.shopDeptId = '';
         },
         triggerFields: ['chainDeptId'],

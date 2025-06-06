@@ -18,13 +18,18 @@ defineOptions({
 });
 const chainOptions = ref<{ label: string; value: string }[]>([]);
 const shopOptions = ref<{ label: string; value: string }[]>([]);
-const getShopList = async (value: string, chainDeptId: string) => {
+const getShopList = async (
+  value: string,
+  groupDeptId: string,
+  chainDeptId: string,
+) => {
   const options = await getShopListApi({
     pageAsc: false,
     pageCurrent: 1,
     pageSearchCount: true,
     pageSize: 9999,
     name: value,
+    groupDeptId,
     chainDeptId,
   });
   shopOptions.value = options.records.map((item: any) => ({
@@ -50,8 +55,12 @@ const getChainList = async (value: string, groupDeptId: string) => {
 const handleSearchChain = async (value: string, groupDeptId: string) => {
   await getChainList(value, groupDeptId);
 };
-const handleSearchShop = async (value: string, chainDeptId: string) => {
-  await getShopList(value, chainDeptId);
+const handleSearchShop = async (
+  value: string,
+  groupDeptId: string,
+  chainDeptId: string,
+) => {
+  await getShopList(value, groupDeptId, chainDeptId);
 };
 
 const chainGroupOptions = ref<{ label: string; value: string }[]>([]);
@@ -120,6 +129,7 @@ const [Form, formApi] = useVbenForm({
         return {
           showSearch: true,
           filterOption: false,
+          allowClear: true,
           options: chainOptions.value,
           placeholder: '请输入搜索',
           style: {
@@ -147,6 +157,7 @@ const [Form, formApi] = useVbenForm({
       defaultValue: '',
       componentProps: (values) => {
         return {
+          showSearch: true,
           allowClear: true,
           filterOption: false,
           options: shopOptions.value,
@@ -159,7 +170,7 @@ const [Form, formApi] = useVbenForm({
       },
       dependencies: {
         trigger(values) {
-          handleSearchShop('', values.chainDeptId);
+          handleSearchShop('', values.groupDeptId, values.chainDeptId);
           if (values.oldGroupDeptId !== values.groupDeptId) {
             values.shopDeptId = '';
           }
