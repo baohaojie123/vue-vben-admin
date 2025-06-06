@@ -9,42 +9,15 @@ import { Page, useVbenModal } from '@vben/common-ui';
 import { Button } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getChainGroupListApi, getChainListApi, getShopListApi } from '#/api';
+import { getChainGroupListApi, getChainListApi } from '#/api';
 
-import FormShop from './form-shop.vue';
+import FormChain from './form-chain.vue';
 
-interface RowType {
-  chainDeptName: string;
-  name: string;
-  status: string;
-  statusDisplay: string;
-}
-const chainOptions = ref<{ label: string; value: string }[]>([]);
-
-const getChainList = async (value: string, groupDeptId: string) => {
-  const options = await getChainListApi({
-    pageAsc: false,
-    pageCurrent: 1,
-    pageSearchCount: true,
-    pageSize: 9999,
-    name: value,
-    groupDeptId,
-  });
-  chainOptions.value = options.records.map((item: any) => ({
-    label: item.name,
-    value: item.id,
-  }));
-};
-
-const handleChainSearch = async (value: string, groupDeptId: string) => {
-  await getChainList(value, groupDeptId);
-};
-
-const handleChainGroupSearch = async (value: string) => {
-  await getChainGroupList(value);
-};
 const chainGroupOptions = ref<{ label: string; value: string }[]>([]);
 
+const handleSearch = async (value: string) => {
+  await getChainGroupList(value);
+};
 const getChainGroupList = async (value: string) => {
   const options = await getChainGroupListApi({
     pageAsc: false,
@@ -59,6 +32,13 @@ const getChainGroupList = async (value: string) => {
   }));
 };
 getChainGroupList('');
+interface RowType {
+  groupDeptId: string;
+  name: string;
+  status: string;
+  statusDisplay: string;
+}
+
 const formOptions: VbenFormProps = {
   // 默认展开
   collapsed: false,
@@ -73,39 +53,16 @@ const formOptions: VbenFormProps = {
         showSearch: true,
         filterOption: false,
         options: chainGroupOptions.value,
-        onSearch: handleChainGroupSearch,
+        onSearch: handleSearch,
         placeholder: '请输入连锁集团公司',
       }),
     },
     {
-      component: 'Select',
-      fieldName: 'chainDeptId',
-      label: '连锁',
-      defaultValue: '',
-      componentProps: (values) => {
-        return {
-          allowClear: true,
-          showSearch: true,
-          filterOption: false,
-          options: chainOptions.value,
-          onSearch: handleChainSearch,
-          placeholder: '请输入连锁',
-          disabled: !values.groupDeptId,
-        };
-      },
-      dependencies: {
-        trigger(values) {
-          handleChainSearch('', values.groupDeptId);
-        },
-        triggerFields: ['groupDeptId'],
-      },
-    },
-    {
       component: 'Input',
       fieldName: 'name',
-      label: '门店',
+      label: '连锁',
       componentProps: {
-        placeholder: '请输入门店',
+        placeholder: '请输入连锁',
         allowClear: true,
       },
     },
@@ -131,8 +88,8 @@ const formOptions: VbenFormProps = {
 
 const gridOptions: VxeTableGridOptions<RowType> = {
   columns: [
-    { field: 'chainDeptName', title: '连锁' },
-    { field: 'name', title: '门店' },
+    { field: 'groupDeptId', title: '集团公司ID' },
+    { field: 'name', title: '连锁' },
     { field: 'statusDisplay', title: '状态' },
     {
       field: 'action',
@@ -149,7 +106,7 @@ const gridOptions: VxeTableGridOptions<RowType> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        const res = await getShopListApi({
+        const res = await getChainListApi({
           pageAsc: false,
           pageCurrent: page.currentPage,
           pageSearchCount: true,
@@ -180,7 +137,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions,
 });
 const [FormModel, formModalApi] = useVbenModal({
-  connectedComponent: FormShop,
+  connectedComponent: FormChain,
   onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       gridApi.reload();
@@ -200,7 +157,7 @@ function handleEdit(row: RowType) {
     <FormModel />
     <Grid>
       <template #toolbar-actions>
-        <Button type="primary" @click="openFormModal"> 新增门店 </Button>
+        <Button type="primary" @click="openFormModal"> 新增连锁 </Button>
       </template>
       <template #action="{ row }">
         <Button type="primary" class="ml-2" @click="handleEdit(row)">

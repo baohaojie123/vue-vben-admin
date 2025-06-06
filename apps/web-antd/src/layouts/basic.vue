@@ -17,6 +17,8 @@ import { useAccessStore, useUserStore } from '@vben/stores';
 import { useAuthStore } from '#/store';
 import LoginForm from '#/views/_core/authentication/login.vue';
 
+import ChainSelect from './chain-select.vue';
+
 const notifications = ref<NotificationItem[]>([
   {
     avatar: 'https://avatar.vercel.sh/vercel.svg?text=VB',
@@ -90,6 +92,9 @@ watch(
 
 <template>
   <BasicLayout @clear-preferences-and-logout="handleLogout">
+    <template #chain-select>
+      <ChainSelect />
+    </template>
     <template #user-dropdown>
       <UserDropdown
         :avatar

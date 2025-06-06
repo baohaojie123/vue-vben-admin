@@ -22,8 +22,9 @@
   },
   "user": {
     "title": "用户管理",
+    "chainGroup": "连锁集团公司管理",
     "shop": "门店管理",
-    "store": "连锁管理",
+    "chain": "连锁管理",
     "employee": "员工管理"
   }
 }

@@ -6,31 +6,51 @@ import { useVbenModal } from '@vben/common-ui';
 import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { getStoreListApi, mergeShopApi } from '#/api';
+import { getChainGroupListApi, getChainListApi, mergeShopApi } from '#/api';
 
 defineOptions({
   name: 'FormShop',
 });
-const storeOptions = ref([]);
+const chainOptions = ref<{ label: string; value: string }[]>([]);
 
-const getStoreList = async (value: string) => {
-  const options = await getStoreListApi({
+const getChainList = async (value: string, groupDeptId: string) => {
+  const options = await getChainListApi({
+    pageAsc: false,
+    pageCurrent: 1,
+    pageSearchCount: true,
+    pageSize: 9999,
+    name: value,
+    groupDeptId,
+  });
+  chainOptions.value = options.records.map((item: any) => ({
+    label: item.name,
+    value: item.id,
+  }));
+};
+
+const handleChainSearch = async (value: string, groupDeptId: string) => {
+  await getChainList(value, groupDeptId);
+};
+
+const handleChainGroupSearch = async (value: string) => {
+  await getChainGroupList(value);
+};
+const chainGroupOptions = ref<{ label: string; value: string }[]>([]);
+
+const getChainGroupList = async (value: string) => {
+  const options = await getChainGroupListApi({
     pageAsc: false,
     pageCurrent: 1,
     pageSearchCount: true,
     pageSize: 9999,
     name: value,
   });
-  // 假设接口支持关键词参数
-  storeOptions.value = options.records.map((item: any) => ({
+  chainGroupOptions.value = options.records.map((item: any) => ({
     label: item.name,
     value: item.id,
   }));
 };
-const handleSearch = async (value: string) => {
-  await getStoreList(value);
-};
-getStoreList('');
+getChainGroupList('');
 const [Form, formApi] = useVbenForm({
   handleSubmit: onSubmit,
   commonConfig: {
@@ -45,23 +65,57 @@ const [Form, formApi] = useVbenForm({
       fieldName: 'id',
     },
     {
+      component: 'Input',
+      componentProps: {
+        type: 'hidden',
+      },
+      fieldName: 'oldGroupDeptId',
+    },
+    {
       component: 'Select',
-      fieldName: 'storeDeptId',
-      label: '连锁名称',
+      fieldName: 'groupDeptId',
+      label: '连锁集团公司',
       defaultValue: '',
       rules: 'required',
-
-      componentProps: () => {
+      componentProps: () => ({
+        allowClear: true,
+        showSearch: true,
+        filterOption: false,
+        options: chainGroupOptions.value,
+        onSearch: handleChainGroupSearch,
+        placeholder: '请输入搜索',
+        style: {
+          width: '100%',
+        },
+      }),
+    },
+    {
+      component: 'Select',
+      fieldName: 'chainDeptId',
+      label: '连锁',
+      defaultValue: '',
+      rules: 'required',
+      componentProps: (values) => {
         return {
+          allowClear: true,
           showSearch: true,
           filterOption: false,
-          options: storeOptions,
-          onSearch: handleSearch,
+          options: chainOptions.value,
           placeholder: '请输入搜索',
           style: {
             width: '100%',
           },
+          disabled: !values.groupDeptId,
         };
+      },
+      dependencies: {
+        trigger(values) {
+          handleChainSearch('', values.groupDeptId);
+          if (values.oldGroupDeptId !== values.groupDeptId) {
+            values.chainDeptId = '';
+          }
+        },
+        triggerFields: ['groupDeptId'],
       },
     },
     {
@@ -106,7 +160,8 @@ const [Modal, modalApi] = useVbenModal({
         formApi.setValues({
           id: data.id,
           name: data.name,
-          storeDeptId: data.storeDeptId,
+          groupDeptId: data.groupDeptId,
+          chainDeptId: data.chainDeptId,
           status: data.status,
         });
       }

@@ -7,12 +7,11 @@ import { Page, useVbenModal } from '@vben/common-ui';
 import { Button } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getStoreListApi } from '#/api';
+import { getChainGroupListApi } from '#/api';
 
-import FormStore from './form-store.vue';
+import FormChainGroup from './form-chain-group.vue';
 
 interface RowType {
-  region: string;
   name: string;
   status: string;
   statusDisplay: string;
@@ -21,22 +20,16 @@ interface RowType {
 const formOptions: VbenFormProps = {
   // 默认展开
   collapsed: false,
+  commonConfig: {
+    labelWidth: 130,
+  },
   schema: [
     {
       component: 'Input',
-      fieldName: 'region',
-      label: '大区',
-      componentProps: {
-        placeholder: '请输入大区',
-        allowClear: true,
-      },
-    },
-    {
-      component: 'Input',
       fieldName: 'name',
-      label: '连锁',
+      label: '连锁集团公司名称',
       componentProps: {
-        placeholder: '请输入连锁',
+        placeholder: '请输入连锁集团公司名称',
         allowClear: true,
       },
     },
@@ -62,8 +55,7 @@ const formOptions: VbenFormProps = {
 
 const gridOptions: VxeTableGridOptions<RowType> = {
   columns: [
-    { field: 'region', title: '大区' },
-    { field: 'name', title: '连锁' },
+    { field: 'name', title: '连锁集团公司名称' },
     { field: 'statusDisplay', title: '状态' },
     {
       field: 'action',
@@ -80,7 +72,7 @@ const gridOptions: VxeTableGridOptions<RowType> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        const res = await getStoreListApi({
+        const res = await getChainGroupListApi({
           pageAsc: false,
           pageCurrent: page.currentPage,
           pageSearchCount: true,
@@ -111,7 +103,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions,
 });
 const [FormModel, formModalApi] = useVbenModal({
-  connectedComponent: FormStore,
+  connectedComponent: FormChainGroup,
   onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       gridApi.reload();
@@ -131,7 +123,9 @@ function handleEdit(row: RowType) {
     <FormModel />
     <Grid>
       <template #toolbar-actions>
-        <Button type="primary" @click="openFormModal"> 新增连锁 </Button>
+        <Button type="primary" @click="openFormModal">
+          新增连锁集团公司
+        </Button>
       </template>
       <template #action="{ row }">
         <Button type="primary" class="ml-2" @click="handleEdit(row)">

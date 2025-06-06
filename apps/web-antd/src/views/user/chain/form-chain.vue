@@ -1,15 +1,36 @@
 <script lang="ts" setup>
+import { ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { mergeStoreApi } from '#/api';
+import { getChainGroupListApi, mergeChainApi } from '#/api';
 
 defineOptions({
   name: 'FormShop',
 });
 
+const chainGroupOptions = ref<{ label: string; value: string }[]>([]);
+
+const handleSearch = async (value: string) => {
+  await getChainGroupList(value);
+};
+const getChainGroupList = async (value: string) => {
+  const options = await getChainGroupListApi({
+    pageAsc: false,
+    pageCurrent: 1,
+    pageSearchCount: true,
+    pageSize: 9999,
+    name: value,
+  });
+  chainGroupOptions.value = options.records.map((item: any) => ({
+    label: item.name,
+    value: item.id,
+  }));
+};
+getChainGroupList('');
 const [Form, formApi] = useVbenForm({
   handleSubmit: onSubmit,
   commonConfig: {
@@ -24,17 +45,24 @@ const [Form, formApi] = useVbenForm({
       fieldName: 'id',
     },
     {
-      // 组件需要在 #/adapter.ts内注册，并加上类型
-      component: 'Input',
-      // 对应组件的参数
-      componentProps: {
-        placeholder: '请输入',
-      },
-      // 字段名
-      fieldName: 'region',
-      // 界面显示的label
-      label: '连锁区域',
+      component: 'Select',
+      fieldName: 'groupDeptId',
+      label: '连锁集团公司',
+      defaultValue: '',
       rules: 'required',
+      componentProps: () => {
+        return {
+          allowClear: true,
+          showSearch: true,
+          filterOption: false,
+          options: chainGroupOptions.value,
+          onSearch: handleSearch,
+          placeholder: '请输入搜索',
+          style: {
+            width: '100%',
+          },
+        };
+      },
     },
     {
       component: 'Input',
@@ -83,7 +111,7 @@ const [Modal, modalApi] = useVbenModal({
 });
 
 function onSubmit(values: Record<string, any>) {
-  mergeStoreApi(values).then(() => {
+  mergeChainApi(values).then(() => {
     message.success({
       content: `提交成功：${JSON.stringify(values)}`,
       duration: 2,
